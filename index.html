@@ -1,0 +1,2800 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-LKPD Perkalian Bersusun 🚂</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Fredoka+One&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --red: #E53935;
+            --orange: #FF8C00;
+            --yellow: #FFD700;
+            --green: #4CAF50;
+            --blue: #1565C0;
+            --teal: #00796B;
+            --purple: #9C27B0;
+            --pink: #FF69B4;
+            --white: #FFFFFF;
+            --light: #E8F4FD;
+            --dark: #1A237E;
+            --shadow: 0 8px 0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #BBDEFB 0%, #E3F2FD 50%, #B2EBF2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .bg-decor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            font-size: 2.5rem;
+            animation: floatAround linear infinite;
+            opacity: 0.15;
+        }
+
+        @keyframes floatAround {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-120px) rotate(360deg); }
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 480px;
+            height: 95vh;
+            max-height: 900px;
+            background: var(--white);
+            position: relative;
+            overflow: hidden;
+            border-radius: 36px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25), inset 0 2px 0 rgba(255, 255, 255, 0.8);
+            border: 6px solid #1565C0;
+            z-index: 1;
+            margin: auto;
+        }
+
+        #app-container::before {
+            content: '🚂⭐🚂';
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            z-index: 10;
+            letter-spacing: 5px;
+        }
+
+        .screen {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            transition: transform 0.4s cubic-bezier(.68, -0.55, .27, 1.55), opacity 0.3s;
+        }
+
+        .screen::-webkit-scrollbar { width: 4px; }
+        .screen::-webkit-scrollbar-thumb { background: #1565C0; border-radius: 10px; }
+
+        .hidden { display: none !important; }
+
+        /* ======= SLIDE 1 - COVER ======= */
+        #slide-1 {
+            background: #1565C0;
+            padding: 0;
+            overflow: hidden;
+            display: block;
+            position: relative;
+        }
+        /* Full-screen cover canvas */
+        #cover-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        /* Sky gradient */
+        #cover-sky {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, #0D3B9E 0%, #1565C0 55%, #1976D2 70%, #43A047 70%, #2E7D32 100%);
+        }
+        /* Stars */
+        .c-star {
+            position: absolute;
+            color: #FFD700;
+            pointer-events: none;
+            animation: csTwinkle 2s ease-in-out infinite alternate;
+            z-index: 2;
+            font-style: normal;
+        }
+        @keyframes csTwinkle {
+            0%   { opacity: 0.3; transform: scale(0.7); }
+            100% { opacity: 1;   transform: scale(1.2); }
+        }
+        /* ---- Top section ---- */
+        #cover-top {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            text-align: center;
+            padding-top: 18px;
+        }
+        /* LKPD box */
+        .c-lkpd-box {
+            display: inline-block;
+            border: 2.5px solid rgba(255,255,255,0.55);
+            border-radius: 16px;
+            padding: 4px 30px 6px;
+            background: rgba(255,255,255,0.07);
+        }
+        .c-lkpd-text {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(2.6rem, 10vw, 3.4rem);
+            color: #FFD700;
+            text-shadow: 4px 4px 0 rgba(0,0,0,0.35), 0 0 25px rgba(255,215,0,0.25);
+            line-height: 1;
+            display: block;
+        }
+        .c-lkpd-sub {
+            font-size: 0.58rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.9);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: block;
+            margin-top: 1px;
+        }
+        /* Mata pelajaran */
+        .c-mapel-big {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(2.2rem, 9vw, 4rem);
+            color: #FFD700;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+            line-height: 1;
+            display: block;
+        }
+        .c-materi-pill {
+            display: inline-block;
+            background: rgba(255,255,255,0.18);
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 30px;
+            padding: 4px 22px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: white;
+            margin-top: 6px;
+        }
+        /* MaBer */
+        #cover-maber {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            margin-top: 8px;
+            line-height: 1;
+        }
+        .c-maber-big {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(2.5rem, 11vw, 3.2rem);
+            color: #FFD700;
+            text-shadow: 5px 5px 0 #0D3B8E, 0 0 30px rgba(255,215,0,0.25);
+            display: block;
+        }
+        .c-maber-sub {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(0.85rem, 3.5vw, 1.1rem);
+            color: white;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+            display: block;
+            margin-top: -2px;
+        }
+        /* ---- Bottom scene ---- */
+        #cover-scene {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 52%;
+            z-index: 3;
+        }
+        /* Ground + grass */
+        #cover-ground {
+            position: absolute;
+            bottom: 0;
+            left: 0; right: 0;
+            height: 45%;
+            background: linear-gradient(180deg, #43A047 0%, #2E7D32 50%, #5D4037 50%, #4E342E 100%);
+        }
+
+        /* ═══════════════════════════════════════
+           CSS TRAIN SCENE  — v7 (fixed)
+           ═══════════════════════════════════════ */
+
+        /* ── Scene container ── */
+        #cover-train-scene {
+            position: absolute;
+            left: 0;
+            bottom: 29%;          /* sits on the ground strip */
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end; /* all bottoms aligned */
+            gap: 0;
+            z-index: 4;
+            animation: trainBounce 1.4s ease-in-out infinite alternate;
+        }
+        @keyframes trainBounce {
+            from { transform: translateY(0px); }
+            to   { transform: translateY(-7px); }
+        }
+
+        /* ── REL KERETA ── */
+        /* Wrapper SVG rel */
+        #cover-rail-svg {
+            position: absolute;
+            left: 0; right: 0;
+            bottom: calc(29% - 16px);
+            height: 30px;
+            z-index: 3;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        #cover-rail-svg svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ─── LOKOMOTIF ─────────────────────────── */
+        .css-train {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;   /* center children horizontally */
+            flex-shrink: 0;
+            margin-bottom: 35px;
+            left: 20px;
+        }
+
+        /* Asap / steam */
+        .steam-wrap {
+            position: absolute;
+            top: -24px;
+            left: 18px;
+            display: flex;
+            gap: 3px;
+            align-items: flex-end;
+        }
+        .steam {
+            border-radius: 50%;
+            background: rgba(255,255,255,0.88);
+            animation: steamPuff 1.3s ease-out infinite;
+        }
+        .s1 { width: 9px;  height: 9px;  animation-delay: 0s; }
+        .s2 { width: 13px; height: 13px; animation-delay: 0.35s; }
+        .s3 { width: 8px;  height: 8px;  animation-delay: 0.7s; }
+        @keyframes steamPuff {
+            0%   { opacity: 0.9; transform: translateY(0) scale(1); }
+            100% { opacity: 0;   transform: translateY(-20px) scale(2); }
+        }
+
+        /* Cerobong */
+        .train-chimney {
+            width: 13px; height: 18px;
+            background: linear-gradient(180deg, #1A1A1A, #3A3A3A);
+            border-radius: 4px 4px 2px 2px;
+            border-top: 3px solid #111;
+            margin-left: 10px;    /* geser ke kiri, di atas kabin */
+            align-self: flex-start;
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+        }
+
+        /* Kabin / body utama */
+        .loco-body {
+            width: 86px;
+            height: 52px;
+            background: linear-gradient(160deg, #1E6FD9 0%, #1356B0 55%, #0D3E8A 100%);
+            border-radius: 10px 10px 4px 4px;
+            border: 3px solid #0a3070;
+            box-shadow:
+                0 5px 0 #092655,
+                inset 0 2px 0 rgba(255,255,255,0.18),
+                inset 0 -2px 0 rgba(0,0,0,0.15);
+            position: relative;
+            overflow: visible;
+            flex-shrink: 0;
+        }
+
+        /* Jendela kabin */
+        .loco-window {
+            position: absolute;
+            top: 6px; right: 7px;
+            width: 22px; height: 18px;
+            background: linear-gradient(135deg, #B3E5FC, #64B5F6);
+            border-radius: 4px;
+            border: 2.5px solid #0a3070;
+            box-shadow: inset 0 1px 4px rgba(255,255,255,0.6);
+        }
+        .loco-window::after {          /* refleksi kaca */
+            content: '';
+            position: absolute;
+            top: 2px; left: 2px;
+            width: 5px; height: 8px;
+            background: rgba(255,255,255,0.45);
+            border-radius: 2px;
+            transform: rotate(15deg);
+        }
+
+        /* Lampu depan */
+        .loco-light {
+            position: absolute;
+            bottom: 9px; right: -2px;
+            width: 10px; height: 8px;
+            background: #FFD700;
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0 0 10px #FFD700, 0 0 4px #FFF;
+        }
+
+        /* Bintang */
+        .loco-star {
+            position: absolute;
+            top: 5px; left: 8px;
+            font-size: 0.88rem;
+            line-height: 1;
+            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+        }
+
+        /* Hidung depan lokomotif */
+        .loco-body::before {
+            content: '';
+            position: absolute;
+            right: -19px; top: 6px;
+            width: 20px; height: 40px;
+            background: linear-gradient(155deg, #1E6FD9, #1356B0);
+            border-radius: 0 12px 8px 0;
+            border: 3px solid #0a3070;
+            border-left: none;
+            box-shadow: 4px 3px 0 #092655;
+        }
+
+        /* Kopling / coupling */
+        .coupling {
+            width: 8px; height: 5px;
+            background: linear-gradient(180deg, #777, #444);
+            border-radius: 2px;
+            align-self: flex-end;
+            margin-bottom: 14px;   /* sejajar as roda */
+            margin-right: -1px;
+            box-shadow: 0 2px 0 #222;
+            flex-shrink: 0;
+        }
+
+        /* ─── RODA ─────────────────────────────── */
+        .wheels-row {
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+            padding: 3px 4px 0;
+            align-items: flex-end;
+        }
+        .wheel {
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 38% 32%, #9E9E9E 0%, #555 45%, #222 100%);
+            border: 3px solid #111;
+            box-shadow:
+                0 3px 6px rgba(0,0,0,0.55),
+                inset 0 2px 3px rgba(255,255,255,0.2);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            /* NO rotation animation — roda diam */
+        }
+        /* Jari-jari roda (4 spoke) pakai SVG-like pseudo */
+        .wheel::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.18);
+        }
+        .wheel-spoke {
+            position: absolute;
+            width: 100%; height: 100%;
+            top: 0; left: 0;
+        }
+        .wheel-spoke::before,
+        .wheel-spoke::after {
+            content: '';
+            position: absolute;
+            background: rgba(255,255,255,0.28);
+            border-radius: 1px;
+            top: 50%; left: 50%;
+        }
+        /* spoke horizontal */
+        .wheel-spoke::before {
+            width: 55%; height: 2px;
+            transform: translate(-50%, -50%);
+        }
+        /* spoke vertical */
+        .wheel-spoke::after {
+            width: 2px; height: 55%;
+            transform: translate(-50%, -50%);
+        }
+        /* Hub tengah */
+        .wheel-hub {
+            position: absolute;
+            width: 7px; height: 7px;
+            background: radial-gradient(circle, #EEE, #999);
+            border-radius: 50%;
+            border: 1.5px solid #555;
+        }
+
+        .big-wheel    { width: 28px; height: 28px; }
+        .medium-wheel { width: 22px; height: 22px; }
+        .small-wheel  { width: 16px; height: 16px; }
+
+        /* ─── WAGON ────────────────────────────── */
+        .css-wagon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;   /* label & roda center */
+            flex-shrink: 0;
+            margin-bottom: 35px;
+        }
+
+        .wagon-body {
+            width: 64px;
+            height: 52px;          /* identik dengan loco-body */
+            border-radius: 8px 8px 4px 4px;
+            border: 3px solid rgba(0,0,0,0.28);
+            box-shadow:
+                0 5px 0 rgba(0,0,0,0.35),
+                inset 0 2px 0 rgba(255,255,255,0.18),
+                inset 0 -2px 0 rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            left: 18px;
+        }
+        /* Frame hiasan dalam wagon */
+        .wagon-body::before {
+            content: '';
+            position: absolute;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 2px solid rgba(255,255,255,0.22);
+            border-radius: 4px;
+        }
+        .wagon-label {
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.88rem;
+            color: white;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            position: relative; z-index: 1;
+        }
+
+        /* Kopling ANTAR gerbong — elemen terpisah di flex row */
+        .inter-coupling {
+            width: 8px;
+            height: 6px;
+            background: linear-gradient(180deg, #888, #444);
+            border-radius: 2px;
+            align-self: flex-end;
+            margin-bottom: 52px;   /* sejajar tengah roda (22px/2 + padding) */
+            flex-shrink: 0;
+            box-shadow: 0 2px 0 #222;
+        }
+
+        /* ─── LABEL PERKALIAN ─────────────────── */
+        #cover-cargo-label {
+            position: absolute;
+            left: 4%;
+            bottom: 24%;
+            z-index: 4;
+        }
+        .c-cargo-label {
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.72rem;
+            color: #FFD700;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.55);
+        }
+        /* Tower (right) */
+        #cover-tower {
+            position: absolute;
+            right: 2%;
+            bottom: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .c-tower-flag { font-size: 1.5rem; margin-bottom: 0px; transform: translateY(-18px); left: 9%; position: relative; z-index: 2; }
+        .c-block {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 17px;
+            border-radius: 4px;
+            font-size: 0.55rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            transition: none;
+            transform: translateY(-27px);
+        }
+        .c-tower-base {
+            background: #6D4C41;
+            width: 100px;
+            height: 16px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            transform: translateY(-28px);
+        }
+        /* Clouds */
+        .c-cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.92;
+            animation: cloudDrift 8s ease-in-out infinite alternate;
+        }
+        .c-cloud::before, .c-cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+        @keyframes cloudDrift {
+            from { transform: translateX(0); }
+            to   { transform: translateX(8px); }
+        }
+        /* Bottom bar */
+        #cover-kelas-bar {
+            position: absolute;
+            bottom: 27px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+            background: rgba(6, 56, 194, 0.7);
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 30px;
+            padding: 5px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.88rem;
+            color: white;
+            white-space: nowrap;
+        }
+        .kelas-divider {
+            width: 1.5px; height: 20px;
+            background: rgba(255,255,255,0.45);
+        }
+        /* Start button overlay */
+        #cover-start-btn {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 6;
+            background: #FFD700;
+            color: #0D3B9E;
+            padding: 11px 46px;
+            border-radius: 50px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.25rem;
+            border: none;
+            box-shadow: 0 7px 0 #B8860B, 0 10px 25px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            /* transform: translateY(-22px); */
+        }
+        #cover-start-btn:active {
+            transform: translateX(-50%) translateY(5px);
+            box-shadow: 0 2px 0 #B8860B;
+        }
+        .star-burst {
+            position: absolute;
+            font-size: 1.4rem;
+            animation: spinStar 3s linear infinite;
+        }
+        @keyframes spinStar {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+
+        /* ======= SLIDE 2 - LOGIN ======= */
+        #slide-2 {
+            background: linear-gradient(160deg, #E3F2FD 0%, #E8F5E9 100%);
+            justify-content: center;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 30px;
+            padding: 30px 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+            border: 4px solid #1565C0;
+            position: relative;
+        }
+
+        .login-card h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.6rem;
+            color: var(--blue);
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .login-card .subtitle {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .form-group { margin-bottom: 16px; }
+
+        .form-group label {
+            display: block;
+            font-weight: 800;
+            font-size: 0.8rem;
+            color: var(--blue);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 3px solid #90CAF9;
+            border-radius: 16px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--dark);
+            outline: none;
+            background: #E3F2FD;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--blue);
+            transform: scale(1.02);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--blue);
+            color: white;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 6px 0 #0D47A1;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            margin-top: 4px;
+        }
+
+        .login-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #0D47A1;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ======= SLIDE 3 - MENU ======= */
+        #slide-3 { background: linear-gradient(160deg, #E3F2FD 0%, #E8F5E9 100%); }
+
+        .menu-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .menu-badge {
+            background: var(--blue);
+            color: white;
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.85rem;
+            padding: 4px 16px;
+            border-radius: 20px;
+        }
+
+        .user-chip {
+            background: white;
+            border: 2px solid #90CAF9;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.75rem;
+            color: var(--blue);
+        }
+
+        .menu-train-banner {
+            background: linear-gradient(135deg, #1565C0, #0D47A1);
+            border-radius: 24px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            box-shadow: 0 6px 0 #0a3170;
+        }
+
+        .menu-train-banner .text h3 {
+            font-family: 'Fredoka One', cursive;
+            color: #FFD700;
+            font-size: 1.3rem;
+            line-height: 1.2;
+        }
+
+        .menu-train-banner .text p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .menu-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: white;
+            border: 3px solid #F0F0F0;
+            padding: 12px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+            box-shadow: 0 4px 0 #E0E0E0;
+        }
+
+        .menu-item:active { transform: translateY(4px); box-shadow: 0 0px 0 #E0E0E0; }
+        .menu-item:hover { border-color: var(--blue); box-shadow: 0 4px 0 var(--blue); }
+
+        .menu-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .menu-text { flex: 1; }
+        .menu-text strong { display: block; font-size: 0.85rem; font-weight: 900; color: var(--dark); }
+        .menu-text span { font-size: 0.78rem; color: #000; font-weight: 700; }
+        .menu-arrow { color: #CCC; font-size: 0.9rem; }
+
+        /* ======= SLIDE 4 - GAME ======= */
+        #slide-4 {
+            background: linear-gradient(160deg, #E8F5E9 0%, #E3F2FD 100%);
+            padding: 16px;
+        }
+
+        .game-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .back-btn-sm {
+            background: white;
+            border: 2px solid #E0E0E0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--dark);
+            cursor: pointer;
+            box-shadow: 0 3px 0 #E0E0E0;
+        }
+
+        .score-pill {
+            background: #1565C0;
+            color: #FFFFFF;
+            font-weight: 900;
+            font-size: 0.8rem;
+            padding: 6px 16px;
+            border-radius: 20px;
+            box-shadow: 0 3px 0 #0D47A1;
+        }
+
+        .progress-bar-wrap {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 20px;
+            height: 10px;
+            width: 100%;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1565C0, #42A5F5);
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+
+        /* Train track visual */
+        .train-scene {
+            background: linear-gradient(180deg, #B3E5FC 0%, #E1F5FE 60%, #8D6E63 60%, #6D4C41 100%);
+            border-radius: 16px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            position: relative;
+            height: 110px;
+            overflow: hidden;
+        }
+
+        .track-rail {
+            position: absolute;
+            bottom: 18px;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: #5D4037;
+            border-radius: 3px;
+        }
+
+        .track-sleepers {
+            position: absolute;
+            bottom: 12px;
+            left: 0;
+            right: 0;
+            display: flex;
+            gap: 14px;
+            padding: 0 10px;
+        }
+
+        .sleeper {
+            width: 12px;
+            height: 18px;
+            background: #4E342E;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .train-emoji {
+            position: absolute;
+            bottom: 18px;
+            font-size: 3.5rem;
+            transition: left 1s ease;
+        }
+
+        .station-flag {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            font-size: 3.5rem;
+        }
+
+        .cloud {
+            position: absolute;
+            font-size: 1.6rem;
+            top: 5px;
+            opacity: 0.7;
+        }
+
+        /* Level badge */
+        .level-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #1565C0, #42A5F5);
+            color: white;
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.7rem;
+            padding: 3px 12px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .quiz-card {
+            background: white;
+            border-radius: 28px;
+            padding: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 3px solid #BBDEFB;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .q-label {
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.75rem;
+            color: var(--blue);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .q-text {
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--dark);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        /* Perkalian Bersusun display */
+        .perkalian-stage {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .susun-box {
+            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+            border: 3px solid #1565C0;
+            border-radius: 20px;
+            padding: 16px 28px;
+            text-align: right;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.6rem;
+            color: var(--dark);
+            min-width: 180px;
+            position: relative;
+        }
+
+        .susun-box .num-top { display: block; color: #0D47A1; }
+        .susun-box .num-bot { display: block; color: #0D47A1; }
+        .susun-box .susun-op {
+            display: block;
+            border-top: 3px solid #1565C0;
+            padding-top: 4px;
+            color: #E53935;
+            font-size: 1rem;
+            text-align: left;
+        }
+        .susun-times {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.4rem;
+            color: var(--red);
+        }
+
+        .hint-box {
+            background: #FFF9C4;
+            border: 2px solid #FFD700;
+            border-radius: 12px;
+            padding: 8px 12px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #5D4037;
+            margin-bottom: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .hint-box.show { display: block; }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .options-grid.single-col { grid-template-columns: 1fr; }
+
+        .option-btn {
+            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+            border: 3px solid #90CAF9;
+            border-radius: 16px;
+            padding: 12px 8px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.3rem;
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 0 #64B5F6;
+            text-align: center;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 7px 0 #64B5F6;
+            border-color: var(--blue);
+        }
+
+        .option-btn:active:not(:disabled) {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #64B5F6;
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            border-color: var(--green);
+            box-shadow: 0 4px 0 #2E7D32;
+            color: #1B5E20;
+        }
+
+        .option-btn.wrong {
+            background: linear-gradient(135deg, #FFEBEE, #FFCDD2);
+            border-color: var(--red);
+            box-shadow: 0 4px 0 #B71C1C;
+            color: #B71C1C;
+        }
+
+        .feedback-box {
+            margin-top: auto;
+            padding: 12px 14px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            min-height: 85px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: #F5F5F5;
+        }
+
+        .feedback-box.correct { background: #E8F5E9; border: 2px solid var(--green); }
+        .feedback-box.wrong { background: #FFEBEE; border: 2px solid var(--red); }
+
+        .fb-status { font-family: 'Fredoka One', cursive; font-size: 1.1rem; margin-bottom: 4px; }
+        .fb-expl { font-size: 0.72rem; font-weight: 700; color: #666; line-height: 1.4; }
+
+        .sound-toggle {
+            background: none;
+            border: none;
+            color: var(--blue);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .sound-toggle:hover { transform: scale(1.1); }
+        .sound-toggle.muted { opacity: 0.5; }
+
+        .next-btn {
+            margin-top: 8px;
+            background: var(--blue);
+            color: white;
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.9rem;
+            padding: 8px 24px;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 4px 0 #0D47A1;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .next-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #0D47A1; }
+
+        /* ======= SLIDE 5 - HASIL ======= */
+        #slide-5 {
+            background: linear-gradient(160deg, #E3F2FD 0%, #B3E5FC 100%);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 36px;
+            padding: 30px 24px;
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.15);
+            border: 4px solid #1565C0;
+            text-align: center;
+            width: 100%;
+        }
+
+        .result-card h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.8rem;
+            color: var(--blue);
+            margin-bottom: 4px;
+        }
+
+        .result-greeting {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .score-circle {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+        }
+
+        .score-circle-bg {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1565C0, #42A5F5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(21, 101, 192, 0.4);
+            animation: scorePopIn 0.5s cubic-bezier(.68, -0.55, .27, 1.55);
+        }
+
+        @keyframes scorePopIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+
+        .score-inner {
+            background: white;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-label { font-size: 0.65rem; font-weight: 800; color: var(--blue); letter-spacing: 1px; }
+        .score-number { font-family: 'Fredoka One', cursive; font-size: 3.5rem; color: var(--dark); line-height: 1; }
+        .result-stars { font-size: 2rem; letter-spacing: 6px; margin-bottom: 16px; }
+        .result-message { font-weight: 800; font-size: 0.9rem; color: #555; margin-bottom: 20px; }
+
+        .back-menu-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--blue);
+            color: white;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 6px 0 #0D47A1;
+            cursor: pointer;
+        }
+
+        /* ======= SLIDE 6 - MATERI ======= */
+        #slide-6 { background: linear-gradient(160deg, #E3F2FD 0%, #F3E5F5 100%); }
+
+        .materi-topbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .materi-topbar button {
+            background: white;
+            border: 2px solid #E0E0E0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 0 #E0E0E0;
+            flex-shrink: 0;
+        }
+
+        .materi-topbar h2 { font-family: 'Fredoka One', cursive; font-size: 1.3rem; color: var(--blue); }
+
+        .video-card {
+            background: white;
+            border-radius: 24px;
+            padding: 18px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            border: 3px solid #BBDEFB;
+        }
+
+        .video-card h3 { font-family: 'Fredoka One', cursive; color: var(--blue); font-size: 1.1rem; text-align: center; margin-bottom: 4px; }
+        .video-card p { text-align: center; font-size: 0.75rem; color: #999; font-weight: 700; margin-bottom: 12px; }
+
+        .video-wrap {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 16px;
+            background: #000;
+        }
+
+        .video-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        .info-banner {
+            margin-top: 12px;
+            background: #E3F2FD;
+            border-left: 5px solid #1565C0;
+            border-radius: 0 12px 12px 0;
+            padding: 10px 14px;
+        }
+
+        .info-banner strong { display: block; font-size: 0.75rem; color: #0D47A1; margin-bottom: 2px; }
+        .info-banner span { font-size: 0.7rem; color: #555; font-weight: 700; }
+
+        .lanjut-btn {
+            margin-top: 16px;
+            width: 100%;
+            padding: 14px;
+            background: var(--green);
+            color: white;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 6px 0 #1B5E20;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            animation: confettiFall 1.5s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(200px) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg) scale(1.05); }
+            75% { transform: rotate(5deg) scale(1.05); }
+        }
+
+        .wobble { animation: wobble 0.5s ease; }
+
+        .info-screen-content { padding-bottom: 30px; }
+
+        .content-card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            border: 2px solid #F0F0F0;
+        }
+
+        .content-card h3 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--blue);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .text-list { list-style: none; }
+
+        .text-list li {
+            position: relative;
+            padding-left: 24px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .text-list li::before {
+            content: '🚂';
+            position: absolute;
+            left: 0;
+            font-size: 0.75rem;
+        }
+
+        .back-btn-float {
+            position: sticky;
+            bottom: 0px;
+            width: 100%;
+            padding: 12px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1rem;
+            box-shadow: 0 4px 0 #0D47A1;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Train track animation */
+        @keyframes trainMove {
+            from { left: 5%; }
+            to { left: 65%; }
+        }
+
+        .train-moving {
+            animation: trainMove 1.2s ease forwards;
+        }
+
+        @keyframes starFloat {
+            0%   { transform: translateY(0) scale(0.5); opacity: 1; }
+            60%  { transform: translateY(-55px) scale(1.3); opacity: 1; }
+            100% { transform: translateY(-90px) scale(0.8); opacity: 0; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating BG decorations -->
+    <div class="bg-decor" style="left:5%; animation-duration:8s; animation-delay:0s;">🚂</div>
+    <div class="bg-decor" style="left:25%; animation-duration:11s; animation-delay:2s;">⭐</div>
+    <div class="bg-decor" style="left:50%; animation-duration:9s; animation-delay:4s;">✖️</div>
+    <div class="bg-decor" style="left:75%; animation-duration:12s; animation-delay:1s;">🎉</div>
+    <div class="bg-decor" style="left:90%; animation-duration:10s; animation-delay:3s;">⭐</div>
+
+    <div id="app-container">
+
+        <!-- ========= SLIDE 1: COVER ========= -->
+        <div id="slide-1" class="screen">
+            <div id="cover-sky"></div>
+
+            <!-- Stars scattered around sky -->
+            <i class="c-star" style="top:6%;  left:5%;  font-size:1.3rem; animation-delay:0s;">★</i>
+            <i class="c-star" style="top:5%;  right:8%; font-size:1.6rem; animation-delay:0.4s;">★</i>
+            <i class="c-star" style="top:14%; left:9%;  font-size:0.75rem; animation-delay:0.9s;">✦</i>
+            <i class="c-star" style="top:20%; right:5%; font-size:1rem;   animation-delay:0.2s;">★</i>
+            <i class="c-star" style="top:36%; right:3%; font-size:1.2rem; animation-delay:0.7s;">✦</i>
+            <i class="c-star" style="top:32%; left:3%;  font-size:0.7rem; animation-delay:1.1s;">★</i>
+            <i class="c-star" style="top:48%; left:6%;  font-size:1rem;   animation-delay:1.5s;">✦</i>
+            <i class="c-star" style="top:38%; right:12%;font-size:1.4rem; animation-delay:0.6s;">★</i>
+
+            <!-- Clouds - many more! -->
+            <!-- Cloud 1 - left mid -->
+            <div style="position:absolute; top:51%; left:6%; z-index:3; display:flex; gap:6px; animation:cloudDrift 9s ease-in-out infinite alternate;">
+                <svg width="58" height="28" viewBox="0 0 58 28"><ellipse cx="29" cy="20" rx="26" ry="10" fill="white" opacity="0.9"/><ellipse cx="22" cy="14" rx="14" ry="11" fill="white" opacity="0.9"/><ellipse cx="36" cy="12" rx="11" ry="9" fill="white" opacity="0.9"/></svg>
+            </div>
+            <!-- Cloud 2 - center -->
+            <div style="position:absolute; top:57%; left:32%; z-index:3; animation:cloudDrift 11s ease-in-out infinite alternate-reverse;">
+                <svg width="42" height="22" viewBox="0 0 42 22"><ellipse cx="21" cy="16" rx="18" ry="8" fill="white" opacity="0.85"/><ellipse cx="16" cy="10" rx="10" ry="8" fill="white" opacity="0.85"/><ellipse cx="28" cy="9" rx="8" ry="7" fill="white" opacity="0.85"/></svg>
+            </div>
+            <!-- Cloud 3 - top left -->
+            <div style="position:absolute; top:22%; left:3%; z-index:3; animation:cloudDrift 13s ease-in-out infinite alternate;">
+                <svg width="72" height="34" viewBox="0 0 72 34"><ellipse cx="36" cy="24" rx="33" ry="12" fill="white" opacity="0.88"/><ellipse cx="28" cy="16" rx="18" ry="14" fill="white" opacity="0.88"/><ellipse cx="48" cy="14" rx="14" ry="11" fill="white" opacity="0.88"/></svg>
+            </div>
+            <!-- Cloud 4 - top right -->
+            <div style="position:absolute; top:18%; right:4%; z-index:3; animation:cloudDrift 10s ease-in-out infinite alternate-reverse;">
+                <svg width="60" height="30" viewBox="0 0 60 30"><ellipse cx="30" cy="22" rx="27" ry="10" fill="white" opacity="0.85"/><ellipse cx="22" cy="14" rx="15" ry="12" fill="white" opacity="0.85"/><ellipse cx="40" cy="12" rx="12" ry="10" fill="white" opacity="0.85"/></svg>
+            </div>
+            <!-- Cloud 5 - upper center -->
+            <div style="position:absolute; top:28%; left:20%; z-index:3; animation:cloudDrift 14s ease-in-out infinite alternate;">
+                <svg width="50" height="24" viewBox="0 0 50 24"><ellipse cx="25" cy="18" rx="22" ry="8" fill="white" opacity="0.8"/><ellipse cx="19" cy="12" rx="12" ry="9" fill="white" opacity="0.8"/><ellipse cx="33" cy="10" rx="10" ry="8" fill="white" opacity="0.8"/></svg>
+            </div>
+            <!-- Cloud 6 - mid-right -->
+            <div style="position:absolute; top:40%; right:1%; z-index:3; animation:cloudDrift 8s ease-in-out infinite alternate-reverse;">
+                <svg width="55" height="26" viewBox="0 0 55 26"><ellipse cx="27" cy="19" rx="24" ry="9" fill="white" opacity="0.82"/><ellipse cx="20" cy="13" rx="13" ry="10" fill="white" opacity="0.82"/><ellipse cx="36" cy="11" rx="11" ry="9" fill="white" opacity="0.82"/></svg>
+            </div>
+            <!-- Cloud 7 - small, mid-left -->
+            <div style="position:absolute; top:40%; left:14%; z-index:3; animation:cloudDrift 12s ease-in-out infinite alternate;">
+                <svg width="38" height="18" viewBox="0 0 38 18"><ellipse cx="19" cy="13" rx="16" ry="7" fill="white" opacity="0.78"/><ellipse cx="14" cy="9" rx="9" ry="7" fill="white" opacity="0.78"/><ellipse cx="25" cy="8" rx="8" ry="6" fill="white" opacity="0.78"/></svg>
+            </div>
+            <!-- Cloud 8 - tiny, upper mid-right -->
+            <div style="position:absolute; top:33%; right:20%; z-index:3; animation:cloudDrift 16s ease-in-out infinite alternate-reverse;">
+                <svg width="34" height="16" viewBox="0 0 34 16"><ellipse cx="17" cy="12" rx="15" ry="6" fill="white" opacity="0.75"/><ellipse cx="12" cy="8" rx="8" ry="6" fill="white" opacity="0.75"/><ellipse cx="23" cy="7" rx="7" ry="5" fill="white" opacity="0.75"/></svg>
+            </div>
+
+            <!-- GRASS patches left and right bottom corners -->
+            <!-- Grass LEFT -->
+            <div style="position:absolute; bottom: -15px; left: -25px; z-index:5; pointer-events:none;">
+                <svg width="200" height="150" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Back grass blades -->
+                    <ellipse cx="10" cy="52" rx="7" ry="22" fill="#388E3C" transform="rotate(-12 10 52)"/>
+                    <ellipse cx="22" cy="50" rx="6" ry="20" fill="#43A047" transform="rotate(-5 22 50)"/>
+                    <ellipse cx="35" cy="53" rx="7" ry="24" fill="#2E7D32" transform="rotate(8 35 53)"/>
+                    <ellipse cx="48" cy="51" rx="5" ry="18" fill="#388E3C" transform="rotate(-3 48 51)"/>
+                    <ellipse cx="60" cy="54" rx="6" ry="20" fill="#43A047" transform="rotate(10 60 54)"/>
+                    <!-- Front grass blades -->
+                    <ellipse cx="5" cy="58" rx="8" ry="26" fill="#4CAF50" transform="rotate(-18 5 58)"/>
+                    <ellipse cx="18" cy="56" rx="7" ry="22" fill="#66BB6A" transform="rotate(-6 18 56)"/>
+                    <ellipse cx="30" cy="58" rx="8" ry="25" fill="#4CAF50" transform="rotate(5 30 58)"/>
+                    <ellipse cx="43" cy="57" rx="6" ry="20" fill="#81C784" transform="rotate(12 43 57)"/>
+                    <ellipse cx="55" cy="59" rx="7" ry="22" fill="#4CAF50" transform="rotate(-8 55 59)"/>
+                    <ellipse cx="68" cy="58" rx="5" ry="18" fill="#66BB6A" transform="rotate(6 68 58)"/>
+                    <!-- Extra small blades -->
+                    <ellipse cx="75" cy="60" rx="4" ry="14" fill="#43A047" transform="rotate(-4 75 60)"/>
+                    <ellipse cx="85" cy="61" rx="4" ry="12" fill="#4CAF50" transform="rotate(8 85 61)"/>
+                </svg>
+            </div>
+            <!-- Grass RIGHT -->
+            <div style="position:absolute; bottom: -15px; right: -25px; z-index:5; pointer-events:none;">
+                <svg width="200" height="150" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Back grass blades -->
+                    <ellipse cx="90" cy="52" rx="7" ry="22" fill="#388E3C" transform="rotate(12 90 52)"/>
+                    <ellipse cx="78" cy="50" rx="6" ry="20" fill="#43A047" transform="rotate(5 78 50)"/>
+                    <ellipse cx="65" cy="53" rx="7" ry="24" fill="#2E7D32" transform="rotate(-8 65 53)"/>
+                    <ellipse cx="52" cy="51" rx="5" ry="18" fill="#388E3C" transform="rotate(3 52 51)"/>
+                    <ellipse cx="40" cy="54" rx="6" ry="20" fill="#43A047" transform="rotate(-10 40 54)"/>
+                    <!-- Front grass blades -->
+                    <ellipse cx="95" cy="58" rx="8" ry="26" fill="#4CAF50" transform="rotate(18 95 58)"/>
+                    <ellipse cx="82" cy="56" rx="7" ry="22" fill="#66BB6A" transform="rotate(6 82 56)"/>
+                    <ellipse cx="70" cy="58" rx="8" ry="25" fill="#4CAF50" transform="rotate(-5 70 58)"/>
+                    <ellipse cx="57" cy="57" rx="6" ry="20" fill="#81C784" transform="rotate(-12 57 57)"/>
+                    <ellipse cx="45" cy="59" rx="7" ry="22" fill="#4CAF50" transform="rotate(8 45 59)"/>
+                    <ellipse cx="32" cy="58" rx="5" ry="18" fill="#66BB6A" transform="rotate(-6 32 58)"/>
+                    <!-- Extra small blades -->
+                    <ellipse cx="25" cy="60" rx="4" ry="14" fill="#43A047" transform="rotate(4 25 60)"/>
+                    <ellipse cx="15" cy="61" rx="4" ry="12" fill="#4CAF50" transform="rotate(-8 15 61)"/>
+                </svg>
+            </div>
+
+            <!-- TOP: LKPD + Mapel + MaBer -->
+            <div id="cover-canvas">
+                <div id="cover-top">
+                    <div class="c-lkpd-box">
+                        <span class="c-lkpd-text">LKPD</span>
+                        <span class="c-lkpd-sub">Lembar Kerja Peserta Didik</span>
+                    </div>
+                    <span class="c-mapel-big">MaBer</span>
+                    <div class="c-materi-pill">Menara Bersusun</div>
+                </div>
+
+                <div id="cover-maber">
+                    <span class="c-maber-big">Matematika</span>
+                    <span class="c-maber-sub">Perkalian Bersusun</span>
+                </div>
+            </div>
+
+            <!-- SCENE -->
+            <div id="cover-scene">
+                <!-- Ground -->
+                <div id="cover-ground"></div>
+
+                <!-- REL KERETA SVG -->
+                <div id="cover-rail-svg">
+                    <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 480 18">
+                        <!-- Bantalan rel (sleepers/ties) - horizontal melintang -->
+                        <rect x="0"   y="2" width="12" height="14" rx="2" fill="#5D4037"/>
+                        <rect x="20"  y="2" width="12" height="14" rx="2" fill="#5D4037"/>
+                        <rect x="40"  y="2" width="12" height="14" rx="2" fill="#6D4C41"/>
+                        <rect x="60"  y="2" width="12" height="14" rx="2" fill="#5D4037"/>
+                        <rect x="80"  y="2" width="12" height="14" rx="2" fill="#6D4C41"/>
+                        <rect x="100" y="2" width="12" height="14" rx="2" fill="#5D4037"/>
+                        <rect x="120" y="2" width="12" height="14" rx="2" fill="#6D4C41"/>
+                        <rect x="140" y="2" width="12" height="14" rx="2" fill="#5D4037"/>
+                        <rect x="160" y="2" width="12" height="14" rx="2" fill="#6D4C41"/>
+                        <rect x="180" y="2" width="12" height="14" rx="2" fill="#5D4037"/>
+                        <rect x="200" y="2" width="12" height="14" rx="2" fill="#6D4C41"/>
+                        <rect x="220" y="2" width="12" height="14" rx="2" fill="#5D4037"/>
+                        <rect x="240" y="2" width="12" height="14" rx="2" fill="#6D4C41"/>
+                        <rect x="260" y="2" width="12" height="14" rx="2" fill="#5D4037"/>
+                        <rect x="280" y="2" width="12" height="14" rx="2" fill="#6D4C41"/>
+                        <rect x="300" y="2" width="12" height="14" rx="2" fill="#5D4037"/>
+                        <rect x="320" y="2" width="12" height="14" rx="2" fill="#6D4C41"/>
+                        <rect x="340" y="2" width="12" height="14" rx="2" fill="#5D4037"/>
+                        <rect x="360" y="2" width="12" height="14" rx="2" fill="#6D4C41"/>
+                        <rect x="380" y="2" width="12" height="14" rx="2" fill="#5D4037"/>
+                        <rect x="400" y="2" width="12" height="14" rx="2" fill="#6D4C41"/>
+                        <rect x="420" y="2" width="12" height="14" rx="2" fill="#5D4037"/>
+                        <rect x="440" y="2" width="12" height="14" rx="2" fill="#6D4C41"/>
+                        <rect x="460" y="2" width="12" height="14" rx="2" fill="#5D4037"/>
+                        <!-- Rel atas (kiri) -->
+                        <rect x="0" y="1" width="480" height="5" rx="8"
+                              fill="url(#railGrad)"
+                              filter="url(#railShadow)"/>
+                        <!-- Rel bawah (kanan) -->
+                        <rect x="0" y="12" width="480" height="5" rx="8"
+                              fill="url(#railGrad)"
+                              filter="url(#railShadow)"/>
+                        <defs>
+                            <linearGradient id="railGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%"   stop-color="#B0BEC5"/>
+                                <stop offset="40%"  stop-color="#78909C"/>
+                                <stop offset="100%" stop-color="#546E7A"/>
+                            </linearGradient>
+                            <filter id="railShadow" x="0" y="0" width="100%" height="200%">
+                                <feDropShadow dx="0" dy="1" stdDeviation="0.5" flood-color="rgba(0,0,0,0.4)"/>
+                            </filter>
+                        </defs>
+                    </svg>
+                </div>
+
+                <!-- TRAIN + WAGON SCENE (CSS, left, bouncing) -->
+                <div id="cover-train-scene">
+
+                    <!-- ═══ LOKOMOTIF ═══ -->
+                    <div class="css-train" id="cover-train">
+                        <!-- Asap cerobong -->
+                        <div class="steam-wrap">
+                            <div class="steam s1"></div>
+                            <div class="steam s2"></div>
+                            <div class="steam s3"></div>
+                        </div>
+                        <!-- Cerobong -->
+                        <div class="train-chimney"></div>
+                        <!-- Body lokomotif -->
+                        <div class="loco-body">
+                            <div class="loco-window"></div>
+                            <div class="loco-light"></div>
+                            <div class="loco-star">⭐</div>
+                        </div>
+                        <!-- Roda lokomotif: 2 besar + 1 kecil -->
+                        <div class="wheels-row">
+                            <div class="wheel big-wheel">
+                                <div class="wheel-spoke"></div>
+                                <div class="wheel-hub"></div>
+                            </div>
+                            <div class="wheel big-wheel">
+                                <div class="wheel-spoke"></div>
+                                <div class="wheel-hub"></div>
+                            </div>
+                            <div class="wheel small-wheel">
+                                <div class="wheel-spoke"></div>
+                                <div class="wheel-hub"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- kopling loco→wagon1 -->
+                    <div class="inter-coupling"></div>
+
+                    <!-- ═══ WAGON 1 : 2×2 ═══ -->
+                    <div class="css-wagon" id="wagon1">
+                        <div class="wagon-body" style="background:linear-gradient(155deg,#EF5350,#B71C1C);">
+                            <div class="wagon-label">2×2</div>
+                        </div>
+                        <div class="wheels-row">
+                            <div class="wheel medium-wheel">
+                                <div class="wheel-spoke"></div>
+                                <div class="wheel-hub"></div>
+                            </div>
+                            <div class="wheel medium-wheel">
+                                <div class="wheel-spoke"></div>
+                                <div class="wheel-hub"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- kopling wagon1→wagon2 -->
+                    <div class="inter-coupling"></div>
+
+                    <!-- ═══ WAGON 2 : 2×3 ═══ -->
+                    <div class="css-wagon" id="wagon2">
+                        <div class="wagon-body" style="background:linear-gradient(155deg,#FFA726,#E65100);">
+                            <div class="wagon-label">2×3</div>
+                        </div>
+                        <div class="wheels-row">
+                            <div class="wheel medium-wheel">
+                                <div class="wheel-spoke"></div>
+                                <div class="wheel-hub"></div>
+                            </div>
+                            <div class="wheel medium-wheel">
+                                <div class="wheel-spoke"></div>
+                                <div class="wheel-hub"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- kopling wagon2→wagon3 -->
+                    <div class="inter-coupling"></div>
+
+                    <!-- ═══ WAGON 3 : 2×4 ═══ -->
+                    <div class="css-wagon" id="wagon3">
+                        <div class="wagon-body" style="background:linear-gradient(155deg,#66BB6A,#1B5E20);">
+                            <div class="wagon-label">2×4</div>
+                        </div>
+                        <div class="wheels-row">
+                            <div class="wheel medium-wheel">
+                                <div class="wheel-spoke"></div>
+                                <div class="wheel-hub"></div>
+                            </div>
+                            <div class="wheel medium-wheel">
+                                <div class="wheel-spoke"></div>
+                                <div class="wheel-hub"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- PERKALIAN label -->
+                <div id="cover-cargo-label">
+                    <span class="c-cargo-label"></span>
+                </div>
+
+                
+
+                <!-- Menara Bersusun (right) -->
+                <div id="cover-tower">
+                    <div class="c-tower-flag">🚩</div>
+                    <div class="c-block" style="background:#D32F2F; width:50px;">2 × 10</div>
+                    <div class="c-block" style="background:#7B1FA2; width:55px;">2 × 9</div>
+                    <div class="c-block" style="background:#1565C0; width:60px;">2 × 8</div>
+                    <div class="c-block" style="background:#00838F; width:65px;">2 × 7</div>
+                    <div class="c-block" style="background:#2E7D32; width:70px;">2 × 6</div>
+                    <div class="c-block" style="background:#F9A825; width:75px;">2 × 5</div>
+                    <div class="c-block" style="background:#EF6C00; width:80px;">2 × 4</div>
+                    <div class="c-block" style="background:#558B2F; width:85px;">2 × 3</div>
+                    <div class="c-block" style="background:#AD1457; width:90px;">2 × 2</div>
+                    <div class="c-block" style="background:#4527A0; width:95px;">2 × 1</div>
+                    <div class="c-tower-base"></div>
+                </div>
+            </div>
+
+            <!-- Kelas & Semester -->
+            <div id="cover-kelas-bar">
+                <span>👤</span> Kelas 3
+                <div class="kelas-divider"></div>
+                <span>📅</span> Semester 2
+            </div>
+
+            <!-- MULAI button -->
+            <button id="cover-start-btn" onclick="goToSlide(2)">🚂 MULAI BELAJAR!</button>
+        </div>
+
+        <!-- ========= SLIDE 2: LOGIN ========= -->
+        <div id="slide-2" class="screen hidden">
+            <div style="display:flex; align-items:center; justify-content:center; height:100%;">
+                <div class="login-card" style="width:100%;">
+                    <button class="close-btn" onclick="goToSlide(1)">×</button>
+                    <div style="text-align:center; margin-bottom:14px;">
+                        <span style="font-size:3rem;">🚂</span>
+                        <h2>Halo, Siapa Kamu?</h2>
+                        <p class="subtitle">Isi dulu ya, sebelum kita belajar sambil naik kereta!🚂</p>
+                    </div>
+                    <div class="form-group">
+                        <label>✏️ Nama Kamu</label>
+                        <input type="text" id="user-name" placeholder="Tulis nama lengkapmu di sini...">
+                    </div>
+                    <div class="form-group">
+                        <label>🏫 Kelas Kamu</label>
+                        <input type="text" id="user-class" placeholder="Contoh: 3 A">
+                    </div>
+                    <button class="login-btn" onclick="submitIdentity()">✅ NAIK KERETA!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========= SLIDE 3: MENU ========= -->
+        <div id="slide-3" class="screen hidden">
+            <div class="menu-topbar">
+                <div class="menu-badge">📚 Menu Utama</div>
+                <div class="user-chip" id="menu-user-chip">👤 Siswa</div>
+                <button onclick="goToSlide(1)" style="background:none; border:none; font-size:1.3rem; cursor:pointer;">🏠</button>
+            </div>
+
+            <div class="menu-train-banner">
+                <div class="text">
+                    <h3>Perkalian Bersusun 🚂</h3>
+                    <p>Yuk, jadi masinis kereta dan<br>kuasai perkalian bersusun!</p>
+                </div>
+                <svg width="80" height="70" viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="5" y="15" width="50" height="28" rx="8" fill="#42A5F5"/>
+                    <rect x="45" y="10" width="26" height="33" rx="8" fill="#64B5F6"/>
+                    <rect x="10" y="21" width="16" height="12" rx="3" fill="#B3E5FC"/>
+                    <rect x="30" y="21" width="11" height="12" rx="3" fill="#B3E5FC"/>
+                    <rect x="50" y="14" width="14" height="10" rx="3" fill="#FFF176"/>
+                    <rect x="5" y="35" width="66" height="5" rx="2" fill="#EF5350"/>
+                    <circle cx="18" cy="46" r="8" fill="#263238"/><circle cx="18" cy="46" r="4" fill="#607D8B"/>
+                    <circle cx="38" cy="46" r="8" fill="#263238"/><circle cx="38" cy="46" r="4" fill="#607D8B"/>
+                    <circle cx="57" cy="46" r="7" fill="#263238"/><circle cx="57" cy="46" r="3" fill="#607D8B"/>
+                    <text x="21" y="33" font-family="Arial" font-size="8" fill="white" font-weight="bold">×</text>
+                </svg>
+            </div>
+
+            <div class="menu-grid">
+                <div class="menu-item" onclick="goToSlide(8)">
+                    <div class="menu-icon" style="background:#E3F2FD;">📖</div>
+                    <div class="menu-text"><strong>Petunjuk E-LKPD</strong><span>Cara menggunakan aplikasi ini</span></div>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item" onclick="goToSlide(7)">
+                    <div class="menu-icon" style="background:#E8F5E9;">🎯</div>
+                    <div class="menu-text"><strong>CP & TP</strong><span>Kompetensi yang akan dicapai</span></div>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item" onclick="goToSlide(6)">
+                    <div class="menu-icon" style="background:#FFF3E0;">🎬</div>
+                    <div class="menu-text"><strong>Materi Pembelajaran Perkalian Bersusun</strong><span>Tonton video perkalian bersusun!</span></div>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item" onclick="window.open('https://www.liveworksheets.com/c?a=s&t=AhqWAT7Tux&sr=n&l=xf&i=oczcduf&r=h8&f=dzdxzcdx&ms=uz&cd=p-wt---3-xmlmejkgknxew6ngnmgknmxg&mw=hs')">
+                    <div class="menu-icon" style="background:#FFF3E0;">📝</div>
+                    <div class="menu-text"><strong>Materi Perkalian Bersusun dalam Kehidupan Sehari-hari</strong><span>Kerjakan soal di website latihan!</span></div>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item" onclick="startGame()">
+                    <div class="menu-icon" style="background:#E3F2FD;">🎮</div>
+                    <div class="menu-text"><strong>Latihan Soal</strong><span>Jadi masinis, lewati setiap palang!</span></div>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item" onclick="goToSlide(9)">
+                    <div class="menu-icon" style="background:#F3E5F5;">💭</div>
+                    <div class="menu-text"><strong>Refleksi</strong><span>Apa yang sudah kamu pelajari?</span></div>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item" onclick="goToSlide(10)">
+                    <div class="menu-icon" style="background:#E8F5E9;">👩‍🏫</div>
+                    <div class="menu-text"><strong>Identitas Pengembang</strong><span>Info tentang pembuat E-LKPD</span></div>
+                    <span class="menu-arrow">›</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========= SLIDE 4: GAME ========= -->
+        <div id="slide-4" class="screen hidden">
+            <div class="game-topbar">
+                <button class="back-btn-sm" onclick="goToSlide(3)">← Menu</button>
+                <span id="score-display" class="score-pill">⭐ Bintang: 0</span>
+                <button id="sound-toggle-btn" class="sound-toggle" onclick="toggleSound()">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+            </div>
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+
+            <!-- Train scene -->
+            <div class="train-scene" id="train-scene">
+                <div class="cloud" style="left:10px;">☁️</div>
+                <div class="cloud" style="left:120px; font-size:1.2rem;">☁️</div>
+                <div class="track-sleepers" id="sleeper-row">
+                    <div class="sleeper"></div><div class="sleeper"></div><div class="sleeper"></div>
+                    <div class="sleeper"></div><div class="sleeper"></div><div class="sleeper"></div>
+                    <div class="sleeper"></div><div class="sleeper"></div><div class="sleeper"></div>
+                    <div class="sleeper"></div><div class="sleeper"></div><div class="sleeper"></div>
+                </div>
+                <div class="track-rail"></div>
+                <div class="train-emoji" id="train-emoji" style="left:65%; transform: scaleX(-1);">🚂</div>
+                <div class="station-flag">🚉</div>
+            </div>
+
+            <div class="quiz-card">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                    <p class="q-label" id="q-number">🚦 PALANG 1 dari 6</p>
+                    <span class="level-badge" id="level-badge">MUDAH</span>
+                </div>
+                <p class="q-text" id="q-text">Berapa hasil perkalian berikut?</p>
+
+                <!-- Perkalian susun visual -->
+                <div class="perkalian-stage">
+                    <div class="susun-box" id="susun-box">
+                        <span class="susun-times">×</span>
+                        <span class="num-top" id="num-top">12</span>
+                        <span class="num-bot" id="num-bot">4</span>
+                        <span class="susun-op" id="susun-op">?</span>
+                    </div>
+                </div>
+
+                <!-- Hint box (tampil saat salah) -->
+                <div class="hint-box" id="hint-box">
+                    💡 <span id="hint-text"></span>
+                </div>
+
+                <div class="options-grid" id="options"></div>
+
+                <div class="feedback-box" id="feedback-box">
+                    <p class="fb-status" id="fb-status">🚂 Pilih jawabanmu!</p>
+                    <p class="fb-expl" id="fb-text"></p>
+                    <button class="next-btn hidden" id="next-btn" onclick="handleNext()">LANJUTKAN ➡️</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========= SLIDE 5: HASIL ========= -->
+        <div id="slide-5" class="screen hidden">
+            <div style="display:flex; align-items:center; justify-content:center; height:100%;">
+                <div class="result-card" id="result-card">
+                    <div id="result-confetti" style="position:relative; height:10px;"></div>
+                    <h2>🎉 Sampai Tujuan!</h2>
+                    <p class="result-greeting" id="user-greeting"></p>
+                    <div class="score-circle">
+                        <div class="score-circle-bg">
+                            <div class="score-inner">
+                                <span class="score-label">BINTANGMU</span>
+                                <span class="score-number" id="final-score">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="result-stars" id="result-stars">⭐⭐⭐</div>
+                    <p class="result-message" id="result-message">Luar biasa!</p>
+                    <button class="back-menu-btn" onclick="goToSlide(3)">🏠 Kembali ke Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========= SLIDE 6: MATERI ========= -->
+        <div id="slide-6" class="screen hidden">
+            <div class="materi-topbar">
+                <button onclick="goToSlide(3)"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2>🎬 Materi Video</h2>
+            </div>
+
+            <div class="video-card">
+                <h3>Yuk, Simak Videonya! 🎉</h3>
+                <p>Tekan gambar di bawah untuk menonton video!</p>
+
+                <a href="https://youtu.be/ny0azNTa148?si=5TpIkVO7Tx2RGlfp" target="_blank" style="display:block; text-decoration:none;">
+                    <div style="position:relative; border-radius:16px; overflow:hidden; box-shadow:0 6px 20px rgba(0,0,0,0.2); cursor:pointer;">
+                        <img src="https://img.youtube.com/vi/ny0azNTa148/hqdefault.jpg" alt="Thumbnail Video Perkalian Bersusun"
+                            style="width:100%; display:block; border-radius:16px;">
+                        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+                                background:rgba(255,0,0,0.9); border-radius:50%; width:60px; height:60px;
+                                display:flex; align-items:center; justify-content:center;
+                                box-shadow:0 4px 15px rgba(0,0,0,0.4);">
+                            <div style="width:0; height:0; border-top:12px solid transparent;
+                                    border-bottom:12px solid transparent;
+                                    border-left:20px solid white; margin-left:4px;"></div>
+                        </div>
+                        <div style="position:absolute; bottom:0; left:0; right:0;
+                                background:linear-gradient(transparent, rgba(0,0,0,0.7));
+                                padding:20px 12px 10px; border-radius:0 0 16px 16px;">
+                            <p style="color:white; font-size:0.8rem; font-weight:800; margin:0;">
+                                🎬 Video Pembelajaran Perkalian Bersusun
+                            </p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="https://youtu.be/ny0azNTa148?si=5TpIkVO7Tx2RGlfp" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px;
+                      margin-top:12px; background:#FF0000; color:white;
+                      padding:12px; border-radius:16px; text-decoration:none;
+                      font-family:'Fredoka One',cursive; font-size:1rem;
+                      box-shadow:0 5px 0 #990000;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                        <path d="M19.59 6.69a4.83 4.83 0 01-3.77-2.75 12.65 12.65 0 00-8.45 0A4.83 4.83 0 014.41 6.69 46.29 46.29 0 004 12a46.29 46.29 0 00.41 5.31 4.83 4.83 0 003.77 2.75 12.65 12.65 0 008.45 0 4.83 4.83 0 003.77-2.75A46.29 46.29 0 0020 12a46.29 46.29 0 00-.41-5.31zM10 15.5v-7l6 3.5z"/>
+                    </svg>
+                    Buka di YouTube
+                </a>
+
+                <div class="info-banner" style="margin-top:12px;">
+                    <strong>💡 Info Penting:</strong>
+                    <span>Perhatikan baik-baik cara menyusun perkalian ya! Pahami langkah-langkahnya agar bisa menjawab tantangan di game kereta!</span>
+                </div>
+            </div>
+
+            <button class="lanjut-btn" onclick="startGame()">
+                <span>Lanjut ke Game Kereta!</span>
+                <i class="fa-solid fa-train"></i>
+            </button>
+        </div>
+
+        <!-- ========= SLIDE 7: CP & TP ========= -->
+        <div id="slide-7" class="screen hidden">
+            <div class="materi-topbar">
+                <button onclick="goToSlide(3)"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2 style="color:var(--green)">🎯 CP & TP</h2>
+            </div>
+
+            <div class="info-screen-content">
+                <div class="content-card">
+                    <h3><span style="font-size:1.4rem">🎯</span> Capaian Pembelajaran (CP)</h3>
+                    <ul class="text-list">
+                        <li>Peserta didik mampu melakukan operasi penjumlahan, pengurangan, perkalian, dan pembagian bilangan cacah sampai 100.000</li>
+                    </ul>
+                </div>
+
+                <div class="content-card" style="border-left: 5px solid var(--blue)">
+                    <h3><span style="font-size:1.4rem">🛤️</span> Tujuan Pembelajaran (TP)</h3>
+                    <p style="font-size:0.9rem; font-weight:700; color:#555;">Setelah mengikuti kegiatan pembelajaran menggunakan LKPD ini, peserta didik diharapkan mampu:</p>
+                    <ul class="text-list">
+                        <li>Memahami konsep perkalian sebagai penjumlahan berulang dengan benar.</li>
+                        <li>Menjelaskan langkah-langkah perkalian bersusun (panjang dan pendek) secara runtut.</li>
+                        <li>Menyelesaikan operasi perkalian bilangan cacah sampai 100.000 menggunakan metode bersusun dengan tepat.</li>
+                        <li>Menerapkan perkalian bersusun dalam menyelesaikan soal cerita yang berkaitan dengan kehidupan sehari-hari.</li>
+                        <li>Menunjukkan sikap teliti, jujur, dan tanggung jawab dalam mengerjakan soal latihan.</li>
+                    </ul>
+                </div>
+
+                <button class="back-btn-float" onclick="goToSlide(3)">KEMBALI KE MENU</button>
+            </div>
+        </div>
+
+        <!-- ========= SLIDE 8: PETUNJUK ========= -->
+        <div id="slide-8" class="screen hidden">
+            <div class="materi-topbar">
+                <button onclick="goToSlide(3)"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2 style="color:var(--orange)">📖 PETUNJUK PENGGUNAAN E-LKPD</h2>
+            </div>
+
+            <div class="info-screen-content">
+
+                <!-- Header banner -->
+                <div class="content-card" style="text-align:center; background:linear-gradient(135deg,#FFF8E1,#FFE082); border:2px solid #FFD700; padding:14px;">
+                    <div style="font-size:2.2rem; margin-bottom:6px;">🚂📖</div>
+                    <p style="font-size:0.95rem; font-weight:900; color:#E65100; margin:0;">Petunjuk Penggunaan E-LKPD</p>
+                    <p style="font-size:0.72rem; font-weight:700; color:#BF360C; margin-top:4px;">Ikuti langkah-langkah berikut agar pembelajaran berjalan lancar!</p>
+                </div>
+
+                <!-- Langkah 1 -->
+                <div class="content-card" style="border-left:5px solid #FF8C00; padding:12px 14px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                        <div style="background:#FF8C00; color:white; border-radius:50%; width:28px; height:28px; min-width:28px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.85rem; box-shadow:0 3px 0 #E65100;">1</div>
+                        <p style="font-size:0.85rem; font-weight:900; color:#E65100; margin:0;">Mengisi Profil 👤</p>
+                    </div>
+                    <p style="font-size:0.8rem; font-weight:700; color:#555; line-height:1.5; padding-left:38px;">Klik tombol <strong>"MULAI"</strong>, kemudian masukkan nama dan kelas pada kolom yang tersedia. Setelah itu, klik tombol <strong>"NAIK KERETA!"</strong> untuk menyimpan data dan masuk ke halaman utama E-LKPD.</p>
+                </div>
+
+                <!-- Langkah 2 -->
+                <div class="content-card" style="border-left:5px solid #1565C0; padding:12px 14px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                        <div style="background:#1565C0; color:white; border-radius:50%; width:28px; height:28px; min-width:28px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.85rem; box-shadow:0 3px 0 #0D47A1;">2</div>
+                        <p style="font-size:0.85rem; font-weight:900; color:#1565C0; margin:0;">Membaca Petunjuk E-LKPD 📖</p>
+                    </div>
+                    <p style="font-size:0.8rem; font-weight:700; color:#555; line-height:1.5; padding-left:38px;">Pilih menu <strong>"Petunjuk E-LKPD"</strong> untuk mengetahui tata cara penggunaan E-LKPD sehingga kegiatan pembelajaran dapat dilakukan dengan baik.</p>
+                </div>
+
+                <!-- Langkah 3 -->
+                <div class="content-card" style="border-left:5px solid #00796B; padding:12px 14px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                        <div style="background:#00796B; color:white; border-radius:50%; width:28px; height:28px; min-width:28px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.85rem; box-shadow:0 3px 0 #004D40;">3</div>
+                        <p style="font-size:0.85rem; font-weight:900; color:#00796B; margin:0;">Memahami CP dan TP 🎯</p>
+                    </div>
+                    <p style="font-size:0.8rem; font-weight:700; color:#555; line-height:1.5; padding-left:38px;">Pilih menu <strong>"CP &amp; TP"</strong> untuk melihat capaian pembelajaran dan tujuan pembelajaran yang akan dicapai selama kegiatan belajar.</p>
+                </div>
+
+                <!-- Langkah 4 -->
+                <div class="content-card" style="border-left:5px solid #9C27B0; padding:12px 14px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                        <div style="background:#9C27B0; color:white; border-radius:50%; width:28px; height:28px; min-width:28px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.85rem; box-shadow:0 3px 0 #6A1B9A;">4</div>
+                        <p style="font-size:0.85rem; font-weight:900; color:#9C27B0; margin:0;">Mempelajari Materi Perkalian Bersusun 📚</p>
+                    </div>
+                    <p style="font-size:0.8rem; font-weight:700; color:#555; line-height:1.5; padding-left:38px;">Pilih menu <strong>"Materi Pembelajaran Perkalian Bersusun"</strong> untuk mempelajari konsep, langkah-langkah, dan contoh pengerjaan perkalian bersusun.</p>
+                </div>
+
+                <!-- Langkah 5 -->
+                <div class="content-card" style="border-left:5px solid #E53935; padding:12px 14px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                        <div style="background:#E53935; color:white; border-radius:50%; width:28px; height:28px; min-width:28px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.85rem; box-shadow:0 3px 0 #B71C1C;">5</div>
+                        <p style="font-size:0.85rem; font-weight:900; color:#E53935; margin:0;">Perkalian Bersusun dalam Kehidupan Sehari-hari 🏘️</p>
+                    </div>
+                    <p style="font-size:0.8rem; font-weight:700; color:#555; line-height:1.5; padding-left:38px;">Pilih menu <strong>"Materi Perkalian Bersusun dalam Kehidupan Sehari-hari"</strong> untuk memahami penerapan perkalian bersusun dalam berbagai situasi kehidupan sehari-hari.</p>
+                </div>
+
+                <!-- Langkah 6 -->
+                <div class="content-card" style="border-left:5px solid #FF8C00; padding:12px 14px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                        <div style="background:#FF8C00; color:white; border-radius:50%; width:28px; height:28px; min-width:28px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.85rem; box-shadow:0 3px 0 #E65100;">6</div>
+                        <p style="font-size:0.85rem; font-weight:900; color:#E65100; margin:0;">Mengerjakan Latihan Soal ✏️</p>
+                    </div>
+                    <p style="font-size:0.8rem; font-weight:700; color:#555; line-height:1.5; padding-left:38px;">Pilih menu <strong>"Latihan Soal"</strong> untuk mengerjakan soal-soal yang bertujuan mengukur pemahaman peserta didik terhadap materi yang telah dipelajari.</p>
+                </div>
+
+                <!-- Langkah 7 -->
+                <div class="content-card" style="border-left:5px solid #1565C0; padding:12px 14px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                        <div style="background:#1565C0; color:white; border-radius:50%; width:28px; height:28px; min-width:28px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.85rem; box-shadow:0 3px 0 #0D47A1;">7</div>
+                        <p style="font-size:0.85rem; font-weight:900; color:#1565C0; margin:0;">Mengisi Refleksi 💭</p>
+                    </div>
+                    <p style="font-size:0.8rem; font-weight:700; color:#555; line-height:1.5; padding-left:38px;">Pilih menu <strong>"Refleksi"</strong> untuk menyampaikan pendapat, pengalaman belajar, serta tingkat pemahaman setelah menggunakan E-LKPD.</p>
+                </div>
+
+                <!-- Fungsi Tombol Navigasi -->
+                <div class="content-card" style="background:linear-gradient(135deg,#E3F2FD,#BBDEFB); border:2px solid #1565C0; padding:14px;">
+                    <p style="font-size:0.85rem; font-weight:900; color:#1565C0; margin-bottom:10px; text-align:center;">🕹️ Fungsi Tombol Navigasi</p>
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <div style="display:flex; align-items:center; gap:10px; background:white; border-radius:10px; padding:8px 12px;">
+                            <span style="font-size:1.1rem; min-width:28px; text-align:center;">✖️</span>
+                            <p style="font-size:0.78rem; font-weight:700; color:#333; margin:0;">Tombol <strong>X</strong> — menutup jendela atau halaman yang sedang dibuka.</p>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px; background:white; border-radius:10px; padding:8px 12px;">
+                            <span style="font-size:1.1rem; min-width:28px; text-align:center;">◀️</span>
+                            <p style="font-size:0.78rem; font-weight:700; color:#333; margin:0;">Tombol <strong>Panah Kiri (←)</strong> — kembali ke halaman sebelumnya.</p>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px; background:white; border-radius:10px; padding:8px 12px;">
+                            <span style="font-size:1.1rem; min-width:28px; text-align:center;">🏠</span>
+                            <p style="font-size:0.78rem; font-weight:700; color:#333; margin:0;">Tombol <strong>Home (🏠)</strong> — kembali ke halaman utama E-LKPD dari menu mana pun.</p>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px; background:white; border-radius:10px; padding:8px 12px;">
+                            <span style="font-size:1.1rem; min-width:28px; text-align:center;">✅</span>
+                            <p style="font-size:0.78rem; font-weight:700; color:#333; margin:0;">Tombol <strong>"MENGERTI!"</strong> — menutup halaman petunjuk dan melanjutkan ke menu berikutnya.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="back-btn-float" onclick="goToSlide(3)" style="background:var(--orange); box-shadow:0 4px 0 #E65100;">✅ MENGERTI!</button>
+            </div>
+        </div>
+
+        <!-- ========= SLIDE 9: REFLEKSI ========= -->
+        <div id="slide-9" class="screen hidden">
+            <div class="materi-topbar">
+                <button onclick="goToSlide(3)"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2 style="color:var(--purple)">💭 Refleksi Belajar</h2>
+            </div>
+
+            <div class="info-screen-content">
+                <div class="content-card" style="text-align:center; background:linear-gradient(135deg,#F3E5F5,#E1BEE7); border:2px solid #CE93D8;">
+                    <span style="font-size:3rem">🤔</span>
+                    <p style="font-size:1rem; font-weight:800; color:var(--dark); margin:10px 0 0;">Apa yang sudah kamu pelajari hari ini?</p>
+                    <p style="font-size:0.75rem; color:#666; font-weight:700; margin-top:4px;">Tulis jawabanmu di bawah ini ya! ✍️</p>
+                </div>
+
+                <!-- Refleksi 1 -->
+                <div class="content-card" style="border-left:5px solid #9C27B0; padding:14px 16px;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                        <div style="background:#9C27B0; color:white; border-radius:50%; width:26px; height:26px; min-width:26px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.8rem;">1</div>
+                        <p style="font-size:0.85rem; font-weight:800; color:#4A148C; margin:0;">Seberapa paham kamu tentang perkalian bersusun hari ini? 🚂</p>
+                    </div>
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <button onclick="selectRefleksiOption(this, 'refleksi-1-option')" data-value="⭐ (Masih bingung)" style="flex:1; padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.4rem;">⭐</span>
+                            <span style="font-size:0.68rem;">Masih bingung</span>
+                        </button>
+                        <button onclick="selectRefleksiOption(this, 'refleksi-1-option')" data-value="⭐⭐ (Cukup paham)" style="flex:1; padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.4rem;">⭐⭐</span>
+                            <span style="font-size:0.68rem;">Cukup paham</span>
+                        </button>
+                        <button onclick="selectRefleksiOption(this, 'refleksi-1-option')" data-value="⭐⭐⭐ (Sangat paham)" style="flex:1; padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.4rem;">⭐⭐⭐</span>
+                            <span style="font-size:0.68rem;">Sangat paham</span>
+                        </button>
+                    </div>
+              </div>
+
+                <!-- Refleksi 2 -->
+                <div class="content-card" style="border-left:5px solid #7B1FA2; padding:14px 16px;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                        <div style="background:#7B1FA2; color:white; border-radius:50%; width:26px; height:26px; min-width:26px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.8rem;">2</div>
+                        <p style="font-size:0.85rem; font-weight:800; color:#4A148C; margin:0;">Seberapa mampu kamu mengerjakan soal perkalian bersusun sendiri?</p>
+                    </div>
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <button onclick="selectRefleksiOption(this, 'refleksi-2-option')" data-value="💪 (Masih perlu bantuan)" style="flex:1; padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.4rem;">💪</span>
+                            <span style="font-size:0.68rem;">Masih perlu bantuan</span>
+                        </button>
+                        <button onclick="selectRefleksiOption(this, 'refleksi-2-option')" data-value="💪💪 (Cukup bisa)" style="flex:1; padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.4rem;">💪💪</span>
+                            <span style="font-size:0.68rem;">Cukup bisa</span>
+                        </button>
+                        <button onclick="selectRefleksiOption(this, 'refleksi-2-option')" data-value="💪💪💪 (Sangat bisa)" style="flex:1; padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.4rem;">💪💪💪</span>
+                            <span style="font-size:0.68rem;">Sangat bisa</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Refleksi 3 -->
+                <div class="content-card" style="border-left:5px solid #6A1B9A; padding:14px 16px;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                        <div style="background:#6A1B9A; color:white; border-radius:50%; width:26px; height:26px; min-width:26px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.8rem;">3</div>
+                        <p style="font-size:0.85rem; font-weight:800; color:#4A148C; margin:0;">Bagaimana perasaanmu saat belajar perkalian bersusun hari ini?</p>
+                    </div>
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <button onclick="selectRefleksiOption(this, 'refleksi-3-option')" data-value="😐 (Kurang senang)" style="flex:1; padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.6rem;">😐</span>
+                            <span style="font-size:0.68rem;">Kurang senang</span>
+                        </button>
+                        <button onclick="selectRefleksiOption(this, 'refleksi-3-option')" data-value="🙂 (Biasa saja)" style="flex:1; padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.6rem;">🙂</span>
+                            <span style="font-size:0.68rem;">Biasa saja</span>
+                        </button>
+                        <button onclick="selectRefleksiOption(this, 'refleksi-3-option')" data-value="😄 (Sangat senang)" style="flex:1; padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.6rem;">😄</span>
+                            <span style="font-size:0.68rem;">Sangat senang</span>
+                        </button>
+                    </div>
+                 </div>
+
+                <!-- Refleksi 4 -->
+                <div class="content-card" style="border-left:5px solid #AB47BC; padding:14px 16px;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                        <div style="background:#AB47BC; color:white; border-radius:50%; width:26px; height:26px; min-width:26px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.8rem;">4</div>
+                        <p style="font-size:0.85rem; font-weight:800; color:#4A148C; margin:0;">Bagian mana yang paling kamu sukai saat pembelajaran tadi?✨</p>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+                        <button onclick="selectRefleksiOption(this, 'refleksi-4-option')" data-value="🎲 (Bermain sambil belajar)" style="padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.6rem;">🎲</span>
+                            <span style="font-size:0.68rem;">Bermain sambil belajar</span>
+                        </button>
+                        <button onclick="selectRefleksiOption(this, 'refleksi-4-option')" data-value="✏️ (Mengerjakan soal)" style="padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.6rem;">✏️</span>
+                            <span style="font-size:0.68rem;">Mengerjakan soal</span>
+                        </button>
+                        <button onclick="selectRefleksiOption(this, 'refleksi-4-option')" data-value="👩‍🏫 (Penjelasan guru)" style="padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.6rem;">👩‍🏫</span>
+                            <span style="font-size:0.68rem;">Penjelasan guru</span>
+                        </button>
+                        <button onclick="selectRefleksiOption(this, 'refleksi-4-option')" data-value="👯 (Diskusi dengan teman)" style="padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.6rem;">👯</span>
+                            <span style="font-size:0.68rem;">Diskusi dengan teman</span>
+                        </button>
+                    </div>
+                  </div>
+
+                <!-- Refleksi 5 -->
+                <div class="content-card" style="border-left:5px solid #CE93D8; padding:14px 16px;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                        <div style="background:#CE93D8; color:white; border-radius:50%; width:26px; height:26px; min-width:26px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.8rem;">5</div>
+                        <p style="font-size:0.85rem; font-weight:800; color:#4A148C; margin:0;">Apa yang kamu harapkan untuk pembelajaran berikutnya?</p>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+                        <button onclick="selectRefleksiOption(this, 'refleksi-5-option')" data-value="🎮 (Lebih banyak permainan)" style="padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.6rem;">🎮</span>
+                            <span style="font-size:0.68rem;">Lebih banyak permainan</span>
+                        </button>
+                        <button onclick="selectRefleksiOption(this, 'refleksi-5-option')" data-value="🧩 (Soal lebih mudah)" style="padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.6rem;">🧩</span>
+                            <span style="font-size:0.68rem;">Soal lebih mudah</span>
+                        </button>
+                        <button onclick="selectRefleksiOption(this, 'refleksi-5-option')" data-value="🔍 (Penjelasan lebih pelan)" style="padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.6rem;">🔍</span>
+                            <span style="font-size:0.68rem;">Penjelasan lebih pelan</span>
+                        </button>
+                        <button onclick="selectRefleksiOption(this, 'refleksi-5-option')" data-value="🚀 (Tantangan lebih sulit)" style="padding:10px 6px; border:2px solid #CE93D8; border-radius:12px; background:white; font-family:'Fredoka One',cursive; cursor:pointer; transition:all 0.2s; color:#555; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                            <span style="font-size:1.6rem;">🚀</span>
+                            <span style="font-size:0.68rem;">Tantangan lebih sulit</span>
+                        </button>
+                    </div>
+               </div>
+
+                <div class="info-banner" style="background:#EDE7F6; border-left-color:#9C27B0">
+                    <p style="font-size:0.75rem; color:#4A148C; font-weight:800; text-align:center;">
+                        "Matematika adalah bekal perjalanan hidupmu — seperti kereta yang membutuhkan rel, kamu butuh ilmu untuk terus maju!"
+                    </p>
+                </div>
+
+                <button class="back-btn-float" onclick="saveRefleksi()" style="background:var(--purple); box-shadow:0 4px 0 #4A148C">💾 SIMPAN & LANJUTKAN!</button>
+            </div>
+        </div>
+
+        <!-- ========= SLIDE 10: IDENTITAS PENGEMBANG ========= -->
+        <div id="slide-10" class="screen hidden">
+            <div class="materi-topbar">
+                <button onclick="goToSlide(3)"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2 style="color:#1565C0">👩‍🏫 Identitas Pengembang</h2>
+            </div>
+
+            <div class="info-screen-content">
+
+                <!-- Dosen Penelaah -->
+                <div class="content-card" style="padding:14px 16px; border:2px solid #FFD700; background:linear-gradient(135deg,#FFFDE7,#FFF9C4);">
+                    <div style="text-align:center; margin-bottom:10px;">
+                        <div style="font-size:1.8rem; margin-bottom:4px;">🌙☁️</div>
+                        <div style="display:inline-block; background:#FFF; border:2px solid #FFD700; border-radius:24px; padding:4px 20px; margin-bottom:2px;">
+                            <span style="font-family:'Fredoka One',cursive; font-size:1rem; color:#F57F17; letter-spacing:1px;">Dosen Penelaah</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <!-- Dosen 1 -->
+                        <div style="background:white; border-radius:14px; padding:10px 14px; border:1.5px solid #FFE082; box-shadow:0 2px 8px rgba(255,215,0,0.15); display:flex; align-items:center; gap:12px;">
+                            <div style="font-size:1.8rem; flex-shrink:0;">👩‍🎓</div>
+                            <div>
+                                <div style="font-weight:900; font-size:0.78rem; color:#1A237E; line-height:1.4;">Dr. Fara Virgianita, P, S.Pd, M.Pd.</div>
+                                <div style="font-size:0.68rem; color:#888; font-weight:700; margin-top:2px;">199003242023212030</div>
+                                <div style="font-size:0.65rem; color:#F57F17; font-weight:800; margin-top:3px; letter-spacing:0.5px;">Dosen Pembina</div>
+                            </div>
+                        </div>
+                        <!-- Dosen 2 -->
+                        <div style="background:white; border-radius:14px; padding:10px 14px; border:1.5px solid #FFE082; box-shadow:0 2px 8px rgba(255,215,0,0.15); display:flex; align-items:center; gap:12px;">
+                            <div style="font-size:1.8rem; flex-shrink:0;">👨‍🎓</div>
+                            <div>
+                                <div style="font-weight:900; font-size:0.78rem; color:#1A237E; line-height:1.4;">Yana Supriyatna, S.Pd., M.Pd.</div>
+                                <div style="font-size:0.68rem; color:#888; font-weight:700; margin-top:2px;">199010112024061001</div>
+                                <div style="font-size:0.65rem; color:#F57F17; font-weight:800; margin-top:3px; letter-spacing:0.5px;">Validator Media</div>
+                            </div>
+                        </div>
+                        <!-- Dosen 3 -->
+                        <div style="background:white; border-radius:14px; padding:10px 14px; border:1.5px solid #FFE082; box-shadow:0 2px 8px rgba(255,215,0,0.15); display:flex; align-items:center; gap:12px;">
+                            <div style="font-size:1.8rem; flex-shrink:0;">👨‍🎓</div>
+                            <div>
+                                <div style="font-weight:900; font-size:0.78rem; color:#1A237E; line-height:1.4;">Nurdiyah Kurniati, M.Pd.</div>
+                                <div style="font-size:0.68rem; color:#888; font-weight:700; margin-top:2px;">199809172024062003</div>
+                                <div style="font-size:0.65rem; color:#F57F17; font-weight:800; margin-top:3px; letter-spacing:0.5px;">Validator Materi dan Bahasa</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kelompok badge -->
+                <div class="content-card" style="text-align:center; background:linear-gradient(135deg,#E3F2FD,#BBDEFB); border:2px solid #90CAF9; padding:12px 16px;">
+                    <div style="font-size:1.8rem; margin-bottom:4px;">🌙☁️</div>
+                    <div style="display:inline-block; border:2.5px solid #1565C0; border-radius:30px; padding:5px 28px; background:white;">
+                        <span style="font-family:'Fredoka One',cursive; font-size:1.2rem; color:#1565C0; letter-spacing:2px;">Tim Pengembang</span>
+                    </div>
+                </div>
+
+                <!-- Daftar anggota -->
+                <div class="content-card" style="padding:14px 16px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                        <div style="background:#DBEAFE; border-radius:16px; padding:10px 12px; display:flex; align-items:flex-start; gap:8px;">
+                            <div style="background:#1565C0; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.75rem; flex-shrink:0;">1</div>
+                            <div>
+                                <div style="font-weight:800; font-size:0.78rem; color:#1A237E;">Muhammad Alwaan</div>
+                                <div style="font-size:0.7rem; color:#555; font-weight:700;">2405116129</div>
+                            </div>
+                        </div>
+                        <div style="background:#DBEAFE; border-radius:16px; padding:10px 12px; display:flex; align-items:flex-start; gap:8px;">
+                            <div style="background:#1565C0; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.75rem; flex-shrink:0;">2</div>
+                            <div>
+                                <div style="font-weight:800; font-size:0.78rem; color:#1A237E;">Tiara Aprilia</div>
+                                <div style="font-size:0.7rem; color:#555; font-weight:700;">2405116132</div>
+                            </div>
+                        </div>
+                        <div style="background:#DBEAFE; border-radius:16px; padding:10px 12px; display:flex; align-items:flex-start; gap:8px;">
+                            <div style="background:#1565C0; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.75rem; flex-shrink:0;">3</div>
+                            <div>
+                                <div style="font-weight:800; font-size:0.78rem; color:#1A237E;">Rika Amelia Putri</div>
+                                <div style="font-size:0.7rem; color:#555; font-weight:700;">2405116135</div>
+                            </div>
+                        </div>
+                        <div style="background:#DBEAFE; border-radius:16px; padding:10px 12px; display:flex; align-items:flex-start; gap:8px;">
+                            <div style="background:#1565C0; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.75rem; flex-shrink:0;">4</div>
+                            <div>
+                                <div style="font-weight:800; font-size:0.78rem; color:#1A237E;">Ipa</div>
+                                <div style="font-size:0.7rem; color:#555; font-weight:700;">2405116148</div>
+                            </div>
+                        </div>
+                        <div style="background:#DBEAFE; border-radius:16px; padding:10px 12px; display:flex; align-items:flex-start; gap:8px;">
+                            <div style="background:#1565C0; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.75rem; flex-shrink:0;">5</div>
+                            <div>
+                                <div style="font-weight:800; font-size:0.78rem; color:#1A237E;">Kristina Nova Elisa</div>
+                                <div style="font-size:0.7rem; color:#555; font-weight:700;">2405116152</div>
+                            </div>
+                        </div>
+                        <div style="background:#DBEAFE; border-radius:16px; padding:10px 12px; display:flex; align-items:flex-start; gap:8px;">
+                            <div style="background:#1565C0; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:0.75rem; flex-shrink:0;">6</div>
+                            <div>
+                                <div style="font-weight:800; font-size:0.78rem; color:#1A237E;">Nazwa Alifia</div>
+                                <div style="font-size:0.7rem; color:#555; font-weight:700;">2405116155</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pengembang Desain Media -->
+                <div class="content-card" style="padding:14px 16px; border:2px solid #CE93D8; background:linear-gradient(135deg,#F3E5F5,#EDE7F6);">
+                    <h3 style="font-size:0.9rem; margin-bottom:12px; color:#7B1FA2;">🎨 Pengembang Desain Media</h3>
+                    <div style="background:white; border-radius:14px; padding:10px 14px; border:1.5px solid #CE93D8; box-shadow:0 2px 8px rgba(156,39,176,0.12); display:flex; align-items:center; gap:12px;">
+                        <div style="font-size:1.8rem; flex-shrink:0;">💻</div>
+                        <div>
+                            <div style="font-weight:900; font-size:0.78rem; color:#1A237E; line-height:1.4;">Rifqi Al Bukhari</div>
+                            <div style="font-size:0.68rem; color:#888; font-weight:700; margin-top:2px;">Teknik Informatika | Universitas Mulawarman</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info detail -->
+                <div class="content-card" style="border:2px dashed #90CAF9; background:#F0F8FF;">
+                    <div style="font-size:0.78rem; font-weight:700; color:#333; line-height:2;">
+                        <div>📚 <span style="color:#1565C0;">Program Studi:</span> Pendidikan Guru Sekolah Dasar</div>
+                        <div>🏛️ <span style="color:#1565C0;">Fakultas:</span> Keguruan Dan Ilmu Pendidikan</div>
+                        <div>🎓 <span style="color:#1565C0;">Universitas:</span> Universitas Mulawarman</div>
+                        <div>📖 <span style="color:#1565C0;">Mata Pelajaran:</span> Matematika</div>
+                        <div>✏️ <span style="color:#1565C0;">Materi:</span> Perkalian Bersusun</div>
+                        <div>🎯 <span style="color:#1565C0;">Sasaran:</span> Siswa Kelas 3 SD</div>
+                        <div>📅 <span style="color:#1565C0;">Tahun Pengembangan:</span> 2026</div>
+                    </div>
+                </div>
+
+                <button class="back-btn-float" onclick="goToSlide(3)" style="background:#1565C0; box-shadow:0 4px 0 #0D47A1">KEMBALI</button>
+            </div>
+        </div>
+
+    </div><!-- end app-container -->
+
+    <script>
+        let currentSlide = 1;
+        let userIdentity = { name: '', class: '' };
+        let stars = 0;
+        let correctCount = 0;
+        let currentQIndex = 0;
+        let soundOn = true;
+        let wrongAttempt = false;
+
+        // Web Audio API — tidak butuh file eksternal
+        let audioCtx = null;
+        function getAudioCtx() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            return audioCtx;
+        }
+
+        const sounds = {
+            correct: { play() { if (!soundOn) return; playCorrectSound(); } },
+            wrong:   { play() { if (!soundOn) return; playWrongSound();   } }
+        };
+
+        function playCorrectSound() {
+            const ctx = getAudioCtx();
+            // Ding! ceria — dua nada naik
+            const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+            notes.forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.12);
+                gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.12);
+                gain.gain.linearRampToValueAtTime(0.45, ctx.currentTime + i * 0.12 + 0.03);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.35);
+                osc.start(ctx.currentTime + i * 0.12);
+                osc.stop(ctx.currentTime + i * 0.12 + 0.4);
+            });
+        }
+
+        function playWrongSound() {
+            const ctx = getAudioCtx();
+            // Tetot! — dua nada turun (buzz)
+            const notes = [220, 180];
+            notes.forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.2);
+                gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.2);
+                gain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + i * 0.2 + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.2 + 0.28);
+                osc.start(ctx.currentTime + i * 0.2);
+                osc.stop(ctx.currentTime + i * 0.2 + 0.3);
+            });
+        }
+
+        // Musik latar santai untuk latihan soal
+        const bgMusic = new Audio('https://assets.mixkit.co/music/preview/mixkit-a-very-happy-christmas-897.mp3');
+        bgMusic.loop = true;
+        bgMusic.volume = 0.3;
+
+        function goToSlide(n) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            const target = document.getElementById('slide-' + n);
+            target.classList.remove('hidden');
+            target.scrollTop = 0;
+            currentSlide = n;
+            // Mainkan musik di slide latihan soal (4) dan hasil (5), hentikan di lainnya
+            if (n === 4 || n === 5) {
+                if (soundOn && bgMusic.paused) {
+                    bgMusic.play().catch(e => console.log("BGMusic play failed:", e));
+                }
+            } else {
+                bgMusic.pause();
+                bgMusic.currentTime = 0;
+            }
+        }
+
+        // =====================
+        // GAME DATA: 6 PALANG
+        // =====================
+        const questions = [
+            // PALANG 1 - MUDAH
+            {
+                palang: 1,
+                level: 'MUDAH',
+                numTop: '12',
+                numBot: '4',
+                text: "Kamu sampai di Palang 1! Hitung perkalian bersusun berikut:",
+                options: ["47", "44", "48", "52"],
+                correct: "48",
+                hint: "💡 Petunjuk: Kalikan dulu angka satuan (2 × 4), lalu kalikan angka puluhan (1 × 4). Susun hasilnya!",
+                expl: "12 × 4 = 48. Caranya: 2×4=8 (satuan), 1×4=4 (puluhan). Jadi hasilnya 48! ✅"
+            },
+            // PALANG 2 - MUDAH
+            {
+                palang: 2,
+                level: 'MUDAH',
+                numTop: '20',
+                numBot: '3',
+                text: "Palang 2 terbuka! Selesaikan perkalian ini:",
+                options: ["60", "23", "63", "56"],
+                correct: "60",
+                hint: "💡 Petunjuk: Kalikan satuan dulu (0 × 3), kemudian kalikan puluhan (2 × 3). Gabungkan hasilnya!",
+                expl: "20 × 3 = 60. Caranya: 0×3=0 (satuan), 2×3=6 (puluhan). Jadi hasilnya 60! ✅"
+            },
+            // PALANG 3 - SEDANG
+            {
+                palang: 3,
+                level: 'SEDANG',
+                numTop: '37',
+                numBot: '5',
+                text: "Palang 3 — semakin menantang! Hitung perkalian bersusun:",
+                options: ["155", "185", "165", "195"],
+                correct: "185",
+                hint: "💡 Petunjuk: Kalikan satuan (7 × 5). Jika lebih dari 9, simpan nilai puluhannya. Lalu kalikan puluhan (3 × 5) dan tambahkan yang disimpan!",
+                expl: "37 × 5 = 185. 7×5=35 (tulis 5, simpan 3). 3×5=15+3=18. Jadi 185! ✅"
+            },
+            // PALANG 4 - SEDANG
+            {
+                palang: 4,
+                level: 'SEDANG',
+                numTop: '44',
+                numBot: '14',
+                text: "Palang 4! Ini perkalian dua angka. Yuk hitung!",
+                options: ["616", "611", "484", "576"],
+                correct: "616",
+                hint: "💡 Petunjuk: Kalikan 44 dengan angka satuan (4), lalu kalikan 44 dengan angka puluhan (1) dan geser satu posisi ke kiri. Jumlahkan kedua hasil!",
+                expl: "44 × 14 = 616. Langkah: 44×4=176, lalu 44×10=440. 176+440=616! ✅"
+            },
+            // PALANG 5 - MENANTANG
+            {
+                palang: 5,
+                level: 'MENANTANG',
+                numTop: '56',
+                numBot: '17',
+                text: "Palang 5 — hampir sampai! Hitung dengan teliti:",
+                options: ["952", "862", "972", "912"],
+                correct: "952",
+                hint: "💡 Petunjuk: Kalikan 56 dengan angka satuan (7) dulu, lalu kalikan 56 dengan angka puluhan (1) dan geser satu posisi. Jumlahkan keduanya!",
+                expl: "56 × 17 = 952. Langkah: 56×7=392, 56×10=560. 392+560=952! ✅"
+            },
+            // PALANG 6 - MENANTANG
+            {
+                palang: 6,
+                level: 'MENANTANG',
+                numTop: '49',
+                numBot: '20',
+                text: "Palang Terakhir! Selesaikan dan kereta tiba di stasiun! 🎉",
+                options: ["980", "900", "890", "960"],
+                correct: "980",
+                hint: "💡 Petunjuk: Kalikan 49 dengan angka satuan (0) dulu, lalu kalikan 49 dengan angka puluhan (2) dan geser satu posisi. Jumlahkan hasilnya!",
+                expl: "49 × 20 = 980. 49×0=0 (satuan), 49×2=98 (puluhan). Jadi 980! ✅"
+            }
+        ];
+
+        function toggleSound() {
+            soundOn = !soundOn;
+            const btn = document.getElementById('sound-toggle-btn');
+            const icon = btn.querySelector('i');
+            if (soundOn) {
+                icon.className = 'fa-solid fa-volume-high';
+                btn.classList.remove('muted');
+                if (currentSlide === 4 || currentSlide === 5) {
+                    bgMusic.play().catch(e => console.log("BGMusic play failed:", e));
+                }
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark';
+                btn.classList.add('muted');
+                bgMusic.pause();
+            }
+        }
+
+        function playSound(type) {
+            if (soundOn && sounds[type]) {
+                sounds[type].play();
+            }
+        }
+
+        function submitIdentity() {
+            const name = document.getElementById('user-name').value.trim();
+            const uClass = document.getElementById('user-class').value.trim();
+            if (!name || !uClass) {
+                alert("Hei! 👋 Jangan lupa isi nama dan kelasmu dulu ya!");
+                return;
+            }
+            userIdentity = { name, class: uClass };
+            document.getElementById('menu-user-chip').textContent = '👤 ' + name;
+            goToSlide(3);
+        }
+
+        function startGame() {
+            currentQIndex = 0;
+            stars = 0;
+            correctCount = 0;
+            wrongAttempt = false;
+            document.getElementById('score-display').textContent = "⭐ Bintang: 0";
+            goToSlide(4);
+            loadQuestion();
+        }
+
+        function updateTrainPosition() {
+            const trainEl = document.getElementById('train-emoji');
+            // Move train from 5% to 65% across 6 questions
+            const pct = 5 + (currentQIndex / questions.length) * 60;
+            trainEl.style.left = pct + '%';
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQIndex];
+            wrongAttempt = false;
+
+            // Update progress bar
+            const progress = (currentQIndex / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+
+            // Update palang number & level
+            document.getElementById('q-number').textContent = `🚦 PALANG ${q.palang} dari ${questions.length}`;
+            document.getElementById('q-text').textContent = q.text;
+
+            const lb = document.getElementById('level-badge');
+            lb.textContent = q.level;
+            lb.style.background = q.level === 'MUDAH'
+                ? 'linear-gradient(135deg,#43A047,#66BB6A)'
+                : q.level === 'SEDANG'
+                    ? 'linear-gradient(135deg,#FB8C00,#FFA726)'
+                    : 'linear-gradient(135deg,#E53935,#EF5350)';
+
+            // Update susun box
+            document.getElementById('num-top').textContent = q.numTop;
+            document.getElementById('num-bot').textContent = q.numBot;
+            document.getElementById('susun-op').textContent = '= ?';
+
+            // Hide hint
+            document.getElementById('hint-box').classList.remove('show');
+
+            // Reset feedback
+            const fb = document.getElementById('feedback-box');
+            fb.className = 'feedback-box';
+            document.getElementById('fb-status').innerHTML = "🚂 Pilih jawabanmu!";
+            document.getElementById('fb-text').textContent = "";
+            document.getElementById('next-btn').classList.add('hidden');
+
+            // Update train position
+            updateTrainPosition();
+
+            // Options
+            const optCont = document.getElementById('options');
+            optCont.innerHTML = '';
+            optCont.className = 'options-grid';
+
+            // Deduplicate options
+            const uniqueOptions = [...new Set(q.options)];
+            uniqueOptions.forEach(o => {
+                const b = document.createElement('button');
+                b.className = 'option-btn';
+                b.textContent = o;
+                b.onclick = () => checkAnswer(o, b);
+                optCont.appendChild(b);
+            });
+        }
+
+        function checkAnswer(ans, btn) {
+            const q = questions[currentQIndex];
+            document.querySelectorAll('#options .option-btn').forEach(b => b.disabled = true);
+            const fb = document.getElementById('feedback-box');
+
+            if (ans === q.correct) {
+                // Award star only if first attempt
+                if (!wrongAttempt) {
+                    stars++;
+                }
+                correctCount++;
+                document.getElementById('score-display').textContent = "⭐ Bintang: " + stars;
+                document.getElementById('fb-status').innerHTML = wrongAttempt
+                    ? "✅ Benar! Kereta berjalan lagi! 🎉"
+                    : "✅ Luar Biasa! Kereta maju! 🚂💨";
+                btn.classList.add('correct');
+                fb.className = 'feedback-box correct';
+                document.getElementById('susun-op').textContent = '= ' + q.correct;
+
+                playSound('correct');
+                spawnStarBurst();
+
+                // Animate train forward
+                const trainEl = document.getElementById('train-emoji');
+                const nextPct = 5 + ((currentQIndex + 1) / questions.length) * 60;
+                trainEl.style.left = nextPct + '%';
+
+                document.getElementById('hint-box').classList.remove('show');
+            } else {
+                wrongAttempt = true;
+                document.getElementById('fb-status').innerHTML = "❌ Belum Tepat, Coba Lagi!";
+                btn.classList.add('wrong');
+                fb.className = 'feedback-box wrong';
+                playSound('wrong');
+
+                // Show hint (petunjuk cara, bukan jawaban)
+                document.getElementById('hint-text').textContent = q.hint;
+                document.getElementById('hint-box').classList.add('show');
+
+                // Re-enable buttons after short delay for retry
+                setTimeout(() => {
+                    document.querySelectorAll('#options .option-btn').forEach(b => {
+                        if (!b.classList.contains('wrong')) {
+                            b.disabled = false;
+                        }
+                    });
+                }, 800);
+                return; // Don't show next button yet
+            }
+
+            document.getElementById('fb-text').textContent = "💡 " + q.expl;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function handleNext() {
+            currentQIndex++;
+            if (currentQIndex < questions.length) {
+                loadQuestion();
+            } else {
+                // Show results
+                document.getElementById('final-score').textContent = stars;
+                document.getElementById('progress-fill').style.width = '100%';
+
+                // Move train to station
+                const trainEl = document.getElementById('train-emoji');
+                if (trainEl) trainEl.style.left = '65%';
+
+                let resultStarsDisplay = "⭐".repeat(Math.max(1, stars));
+                let msg = "Semangat terus belajarnya! 💪";
+                if (stars >= 5) { msg = "Luar biasa! Kamu masinis bintang matematika! 🌟🚂"; }
+                else if (stars >= 3) { msg = "Bagus sekali! Terus berlatih ya! 😊"; }
+                else { msg = "Jangan menyerah, terus belajar perkalian bersusun ya! 💪"; }
+
+                document.getElementById('result-stars').textContent = resultStarsDisplay;
+                document.getElementById('result-message').textContent = msg;
+                document.getElementById('user-greeting').textContent = `Selamat ${userIdentity.name || 'Kamu'}! 🎊 Kereta sampai di stasiun tujuan!`;
+
+                goToSlide(5);
+                spawnConfetti();
+            }
+        }
+
+        function spawnStarBurst() {
+            const scene = document.getElementById('train-scene');
+            const emojis = ['⭐', '🌟', '✨', '💫', '🎉', '🏆'];
+            for (let i = 0; i < 12; i++) {
+                const star = document.createElement('div');
+                star.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                const startLeft = 20 + Math.random() * 60;
+                star.style.cssText = `
+                    position: absolute;
+                    left: ${startLeft}%;
+                    top: 50%;
+                    font-size: ${1 + Math.random() * 1.2}rem;
+                    pointer-events: none;
+                    z-index: 10;
+                    animation: starFloat ${0.8 + Math.random() * 0.6}s ease-out forwards;
+                    animation-delay: ${Math.random() * 0.3}s;
+                `;
+                scene.appendChild(star);
+                setTimeout(() => star.remove(), 1500);
+            }
+        }
+
+        function spawnConfetti() {
+            const container = document.getElementById('result-confetti');
+            const colors = ['#1565C0', '#FFD700', '#4CAF50', '#42A5F5', '#FF69B4', '#FF8C00'];
+            for (let i = 0; i < 28; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti-piece';
+                c.style.cssText = `
+                    left: ${Math.random() * 100}%;
+                    background: ${colors[Math.floor(Math.random() * colors.length)]};
+                    animation-delay: ${Math.random() * 0.8}s;
+                    animation-duration: ${1 + Math.random() * 0.8}s;
+                    width: ${6 + Math.random() * 8}px;
+                    height: ${6 + Math.random() * 8}px;
+                    border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+                `;
+                container.appendChild(c);
+                setTimeout(() => c.remove(), 2500);
+            }
+        }
+        function switchTab(tab) {
+            ['kd','cp','tp'].forEach(t => {
+                document.getElementById('panel-' + t).style.display = t === tab ? 'block' : 'none';
+                const btn = document.getElementById('tab-' + t);
+                if (t === tab) {
+                    btn.style.background = '#1565C0';
+                    btn.style.color = 'white';
+                    btn.style.boxShadow = '0 3px 0 #0D47A1';
+                } else {
+                    btn.style.background = 'transparent';
+                    btn.style.color = '#888';
+                    btn.style.boxShadow = 'none';
+                }
+            });
+        }
+
+        let selectedAnswers = {}; // Objek untuk menyimpan jawaban
+
+        function selectRefleksiOption(button, category) {
+            // 1. Hapus kelas 'active' dari semua tombol di kategori yang sama
+            const parent = button.parentElement;
+            const buttons = parent.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.style.background = 'white';
+                btn.style.color = '#555';
+            });
+
+            // 2. Tandai tombol yang diklik sebagai aktif
+            button.style.background = '#9C27B0';
+            button.style.color = 'white';
+
+            // 3. Simpan nilainya ke dalam variabel global
+            selectedAnswers[category] = button.getAttribute('data-value');
+        }
+
+        function saveRefleksi() {
+        const totalPertanyaan = 5;
+        let belumDiisi = [];
+
+        // Cek satu per satu dari nomor 1 sampai 5
+        for (let i = 1; i <= totalPertanyaan; i++) {
+            const key = `refleksi-${i}-option`;
+            if (!selectedAnswers[key]) {
+                belumDiisi.push(i); // Catat nomor yang belum diisi
+            }
+        }
+
+        // Jika ada yang belum diisi, tampilkan peringatan
+        if (belumDiisi.length > 0) {
+            alert('Ups! Nomor ' + belumDiisi.join(', ') + ' belum kamu pilih. Isi semua dulu ya! 😊');
+            return;
+        }
+
+        // JIKA SEMUA SUDAH TERISI, LANJUTKAN SIMPAN:
+        
+        // Tampilkan pesan sukses
+        const toast = document.createElement('div');
+        toast.textContent = '🚀 Semua jawaban tersimpan! Kamu hebat!';
+        toast.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#4CAF50; color:white; padding:12px 24px; border-radius:30px; font-family:Fredoka One,cursive; font-size:0.9rem; z-index:999; box-shadow:0 4px 20px rgba(0,0,0,0.3); white-space:nowrap;';
+        
+        document.body.appendChild(toast);
+        
+        // Pindah slide setelah 1.8 detik
+        setTimeout(() => { 
+            toast.remove(); 
+            goToSlide(3); // Ganti angka 3 ke halaman tujuanmu
+        }, 1800);
+    }
+    </script>
+</body>
+
+</html>
